@@ -25,14 +25,14 @@
 </template>
 
 <script>
-	import axios from 'axios'
-	import $ from 'jquery'
+	// import axios from 'axios'
+	// import $ from 'jquery'
 
 	export default {
 		name: 'Home',
-		components: {
-			axios
-		},
+		// components: {
+		// 	axios
+		// },
 		// methods: {
 		// 	checkRight: function() {
 		// 		let val = {
@@ -59,7 +59,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.login {
 		height: 100%;
 		width: 100%;

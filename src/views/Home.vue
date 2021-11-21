@@ -16,13 +16,15 @@
 						<option>-----------------市区-----------------</option>
 					</select>
 				</div>
-				<div id="leftTwoThree">
+			</div>
+			<div id="leftThree">
+				<div>
 					<img src="/static/img/home/search.png">
 					搜索
 				</div>
 			</div>
-			<div id="leftThree">
-				<div>
+			<div id="leftFour">
+				<div id="list">
 					<router-link :to="{path: '/home', query: {roadId: 1 }}">沙下路</router-link>
 				</div>
 
@@ -77,7 +79,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	#home {
 		width: 100%;
 		height: 100%;
@@ -86,12 +88,6 @@
 		grid-template-columns: 250px auto;
 	}
 
-	#rightStatus a {
-		text-decoration: none;
-		color: black;
-	}
-	
-	/* homePageRight */
 	#right {
 		display: grid;
 		/* grid-template-rows: auto 30px; */
@@ -101,6 +97,11 @@
 	#rightStatus {
 		background-color: rgb(222, 239, 249);
 		display: flex;
+	}
+
+	#rightStatus a {
+		text-decoration: none;
+		color: black;
 	}
 
 	#rightStatus>div {
@@ -118,11 +119,12 @@
 	#left {
 		background-color: rgb(218, 239, 250);
 		border: 2px solid rgb(161, 188, 216);
+
+		display: grid;
+		grid-template-rows: 30px 65px 30px auto;
 	}
 
-	/* homePageLeft */
 	#leftOne {
-		height: 30px;
 		border-bottom: 2px solid rgb(161, 188, 216);
 		/* css3子元素水平，垂直居中 */
 		justify-content: center;
@@ -133,9 +135,6 @@
 	#leftTwoOne {
 		display: grid;
 		grid-template-columns: auto auto auto;
-	}
-
-	#leftTwoOne {
 		margin-left: 10px;
 	}
 
@@ -145,37 +144,44 @@
 		margin-right: 25px;
 	}
 
-	#leftTwoThree>img {
-		height: 1em;
-	}
-
-	#leftTwoThree {
-		float: right;
-		background-color: rgb(189, 227, 241);
-		margin-right: 10px;
-		margin-top: 20px;
-		/* 上边 | 右边 | 下边 | 左边 */
-		padding: 4px 10px 4px 4px;
-		border: 1px solid rgb(70, 163, 189);
-		border-radius: 8px;
-	}
-
 	#leftThree {
-		height: 400px;
-		border: 1px solid rgb(70, 163, 189);
-		background-color: rgb(238, 248, 255);
-		/* 上边 | 右边 | 下边 | 左边 */
-		margin: 100px 20px 40px 20px;
-		padding-top: 10px;
+		margin-top: 5px;
 	}
 
 	#leftThree>div {
+		float: right;
+		background-color: rgb(189, 227, 241);
+		border: 1px solid rgb(70, 163, 189);
+		border-radius: 8px;
+		margin-right: 10px;
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+
+	#leftThree img {
+		height: 1em;
+	}
+
+	#leftFour {
+		border: 1px solid rgb(70, 163, 189);
+		background-color: rgb(238, 248, 255);
 		/* 上边 | 右边 | 下边 | 左边 */
-		margin: 10px 20px 10px 20px;
+		margin: 10px 20px 40px 20px;
+		
+		display: grid;
+		grid-template-rows: auto 40px;
+	}
+
+	#list {
+		/* 上边 | 右边 | 下边 | 左边 */
+		margin: 10px 20px 0px 20px;
+		padding: 10px 0px 0px 20px;
 	}
 
 	#leftTurnPage {
-		/* 上边 | 右边 | 下边 | 左边 */
-		margin: 220px 0 0 20px !important;
+		/* css3子元素水平，垂直居中 */
+		justify-content: center;
+		align-items: center;
+		display: -webkit-flex;
 	}
 </style>

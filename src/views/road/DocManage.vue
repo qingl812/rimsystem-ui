@@ -10,22 +10,22 @@
 				<span>沙下路</span>
 
 				<p><img src="/static/img/docManage/selectFile.png">
-					<span onclick="">合同文件</span>
+					<span @click="ToType('contractFile')">合同文件</span>
 				</p>
 				<p><img src="/static/img/docManage/selectFile.png">
-					<span onclick="">项目档案</span>
+					<span @click="ToType('projectFile')">项目档案</span>
 				</p>
 				<p><img src="/static/img/docManage/selectFile.png">
-					<span onclick="">实施记录</span>
+					<span @click="ToType('implementationRecord')">实施记录</span>
 				</p>
 				<p><img src="/static/img/docManage/selectFile.png">
-					<span onclick="">资金申请表</span>
+					<span @click="ToType('fundApplicationForm')">资金申请表</span>
 				</p>
 				<p><img src="/static/img/docManage/selectFile.png">
-					<span onclick="">资金支付记录</span>
+					<span @click="ToType('fundPaymentRecord')">资金支付记录</span>
 				</p>
 				<p><img src="/static/img/docManage/selectFile.png">
-					<span onclick="">维护养护资料</span>
+					<span @click="ToType('maintenanceInformation')">维护养护资料</span>
 				</p>
 			</div>
 		</div>
@@ -45,15 +45,6 @@
 						<td class="table-time">时间</td>
 						<td class="table-look">查看</td>
 						<td class="table-download">下载</td>
-					</tr>
-					<tr>
-						<td class="table-checkBox"><input type="checkbox"></td>
-						<td class="table-num">1</td>
-						<td class="table-name">2</td>
-						<td class="table-format">3</td>
-						<td class="table-time">4</td>
-						<td class="table-look">5</td>
-						<td class="table-download">6</td>
 					</tr>
 				</table>
 			</div>
@@ -85,18 +76,52 @@
 
 <script>
 	import BlueButton from '../../components/BlueButton.vue'
-	import axios from 'axios'
-	import $ from 'jquery'
+	// import axios from 'axios'
+	// import $ from 'jquery'
+	// import Jump from '../../components/Jump.vue'
 
 	export default {
 		name: 'DocManage',
 		components: {
-			BlueButton
+			BlueButton,
+			// Jump
+		},
+		mounted() {
+			if (typeof(this.$route.query.roadId) == 'undefined') {
+				this.$router.replace({
+					path: this.$route.path,
+					query: {
+						roadId: '0'
+					}
+				})
+			}
+
+			if (typeof(this.$route.query.type) == 'undefined') {
+				this.$router.replace({
+					path: this.$route.path,
+					query: {
+						...this.$route.query,
+						type: 'contractFile'
+					}
+				})
+			}
+		},
+		methods: {
+			ToType(target) {
+				if (this.$route.query.type != target)
+					this.$router.push({
+						path: this.$route.path,
+						query: {
+							...this.$route.query,
+							type: target
+						}
+					})
+			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 	#docManage {
 		height: 100%;
 		width: 100%;
@@ -170,5 +195,10 @@
 
 	#rightTable table {
 		width: 100%;
+	}
+
+	#rightTable table td {
+		vertical-align: middle;
+		text-align: center;
 	}
 </style>

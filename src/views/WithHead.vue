@@ -22,7 +22,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	#withHead {
 		height: 100%;
 		width: 100%;

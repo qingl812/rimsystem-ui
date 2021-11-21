@@ -6,7 +6,10 @@ Vue.use(VueRouter)
 const routes = [{
 		path: '/login',
 		name: 'login',
-		component: () => import('../views/Login.vue')
+		component: () => import('../views/Login.vue'),
+		meta: {
+			title: '广东省惠州市道路信息管理系统 - 登录'
+		}
 	},
 	{
 		path: '/',
@@ -23,7 +26,10 @@ const routes = [{
 			{
 				path: 'home',
 				name: 'Home',
-				component: () => import('../views/Home.vue')
+				component: () => import('../views/Home.vue'),
+				meta: {
+					title: '广东省惠州市道路信息管理系统 - 首页'
+				}
 			},
 			// road
 			{
@@ -66,7 +72,10 @@ const routes = [{
 	{
 		path: '*',
 		name: 'NotFound',
-		component: () => import('../views/NotFound.vue')
+		component: () => import('../views/NotFound.vue'),
+		meta: {
+			title: '该页面不存在-404'
+		}
 	}
 ]
 

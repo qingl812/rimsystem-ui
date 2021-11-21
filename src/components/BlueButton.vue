@@ -6,14 +6,14 @@
 
 <script>
 	export default {
-		name: 'App',
+		name: 'BlueButton',
 		props: {
 			context: String,
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 	.blueButton {
 		margin-right: 10px;
 		background-color: rgb(193, 238, 251);

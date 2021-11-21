@@ -43,7 +43,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.navigation {
 		background-color: rgb(58, 165, 219);
 		display: flex;
