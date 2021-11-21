@@ -50,10 +50,10 @@
 			</div>
 			<div id="rightTurnPage">
 				<div>
-					<BlueButton context="<<"></BlueButton>
-					<BlueButton context=">"></BlueButton>
-					<BlueButton context=">"></BlueButton>
-					<BlueButton context=">>"></BlueButton>
+					<BlueButton context="<<" @click="FirstPage"></BlueButton>
+					<BlueButton context=">" @click="PrePage"></BlueButton>
+					<BlueButton context=">" @click="NextPage"></BlueButton>
+					<BlueButton context=">>" @click="LastPage"></BlueButton>
 					<span>第一页</span>
 					<span>共一页</span>
 					<span>|</span>
@@ -64,10 +64,10 @@
 			</div>
 			<div id="rightOption">
 				<div>
-					<BlueButton context="新增"></BlueButton>
-					<BlueButton context="查看"></BlueButton>
-					<BlueButton context="删除"></BlueButton>
-					<BlueButton context="返回"></BlueButton>
+					<BlueButton context="新增" @click.native="Create()"></BlueButton>
+					<BlueButton context="查看" @click.native="Look()"></BlueButton>
+					<BlueButton context="删除" @click.native="Delete()"></BlueButton>
+					<BlueButton context="返回" @click.native="Back()"></BlueButton>
 				</div>
 			</div>
 		</div>
@@ -87,24 +87,8 @@
 			// Jump
 		},
 		mounted() {
-			if (typeof(this.$route.query.roadId) == 'undefined') {
-				this.$router.replace({
-					path: this.$route.path,
-					query: {
-						roadId: '0'
-					}
-				})
-			}
-
-			if (typeof(this.$route.query.type) == 'undefined') {
-				this.$router.replace({
-					path: this.$route.path,
-					query: {
-						...this.$route.query,
-						type: 'contractFile'
-					}
-				})
-			}
+			// 如果没有 type 参数，显示全部文件
+			// typeof(this.$route.query.type) == 'undefined'
 		},
 		methods: {
 			ToType(target) {
@@ -116,6 +100,48 @@
 							type: target
 						}
 					})
+			},
+			Create() {
+				this.$router.push({
+					path: '/docManageCreate',
+					query: {
+						roadId: this.$route.query.roadId
+					}
+				})
+			},
+			Look() {
+				let fileId = 0;
+				
+				this.$router.push({
+					path: '/docManageLook',
+					query: {
+						roadId: this.$route.query.roadId,
+						fileId: fileId
+					}
+				})
+			},
+			Delete() {
+
+			},
+			Back() {
+				this.$router.push({
+					path: '/home',
+					query: {
+						roadId: this.$route.query.roadId
+					}
+				})
+			},
+			FirstPage() {
+
+			},
+			PrePage() {
+
+			},
+			NextPage() {
+
+			},
+			LastPage() {
+
 			}
 		}
 	}

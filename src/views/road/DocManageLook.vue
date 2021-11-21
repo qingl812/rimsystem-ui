@@ -1,15 +1,19 @@
 <template>
-	<div id="docManageCreate">
+	<div id="docManageLook">
 		<table>
 			<tr style="background-color: rgb(102, 169, 222);">
-				<td colspan="4" style="text-align: center;">新增文件</td>
+				<td colspan="4" style="text-align: center;">查看文件</td>
 			</tr>
 			<tr>
-				<td style="width: 200px;">上传文件</td>
-				<td>
-					<input type=" text" />
+				<td style="width: 200px;">下载</td>
+				<td colspan="3">
+					<img @click="Download()" src="/static/img/docManage/fileDownload.png" width="20px" height="20px">
 				</td>
-				<td style="width: 200px;">文件分类</td>
+			</tr>
+			<tr>
+				<td>文件名</td>
+				<td><input type="text" name="fileName" /></td>
+				<td>文件分类</td>
 				<td>
 					<select name="fileType">
 						<option>合同文件</option>
@@ -22,11 +26,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>文件名</td>
-				<td colspan="3"><input type="text" name="fileName" /></td>
-			</tr>
-			<tr>
-				<td name="archiveUnit">归档单位</td>
+				<td>归档单位</td>
 				<td>
 					<select>
 						<option>单位</option>
@@ -40,11 +40,11 @@
 			<tr>
 				<td>份号</td>
 				<td>
-					<input type="text" name="partNum" />
+					<input type="text" />
 				</td>
 				<td>贡献</td>
 				<td>
-					<input type="text" name="contribute" />
+					<input type="text" />
 				</td>
 			</tr>
 			<tr>
@@ -66,7 +66,7 @@
 	import BlueButton from '../../components/BlueButton.vue'
 
 	export default {
-		name: 'DocManageCreate',
+		name: 'DocManageLook',
 		components: {
 			BlueButton
 		},
@@ -78,6 +78,9 @@
 						roadId: this.$route.query.roadId
 					}
 				})
+			},
+			Download(){
+				
 			}
 		}
 	}

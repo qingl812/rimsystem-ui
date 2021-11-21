@@ -32,14 +32,7 @@
 
 <script>
 	export default {
-		name: 'Navigation',
-		methods: {
-			goto(target) {
-				this.$router.push({
-					name: target
-				})
-			}
-		}
+		name: 'Navigation'
 	}
 </script>
 

@@ -38,6 +38,16 @@ const routes = [{
 				component: () => import('../views/road/DocManage.vue')
 			},
 			{
+				path: 'docManageCreate',
+				name: 'docManageCreate',
+				component: () => import('../views/road/DocManageCreate.vue')
+			},
+			{
+				path: 'docManageLook',
+				name: 'docManageLook',
+				component: () => import('../views/road/DocManageLook.vue')
+			},
+			{
 				path: 'visaRecord',
 				name: 'VisaRecord',
 				component: () => import('../views/NotFound.vue')

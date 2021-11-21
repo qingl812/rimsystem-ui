@@ -8,7 +8,7 @@
 	export default {
 		name: 'BlueButton',
 		props: {
-			context: String,
+			context: String
 		}
 	}
 </script>
