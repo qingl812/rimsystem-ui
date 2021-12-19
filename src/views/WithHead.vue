@@ -1,33 +1,31 @@
 <template>
 	<div id="withHead">
-		<Head></Head>
-		<Navigation></Navigation>
+		<GHead></GHead>
+		<GNavigate></GNavigate>
 		<router-view></router-view>
-		<Status></Status>
+		<GStatus
+			m_company="惠州市公共事业管理局"
+			m_userName="admin"
+			m_systemVersion="系统管理员"
+			m_userType="v1.00"
+		></GStatus>
 	</div>
 </template>
 
-<script>
-	import Head from '../components/Head.vue'
-	import Navigation from '../components/Navigation.vue'
-	import Status from '../components/Status.vue'
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import GHead from "../components/GHead.vue";
+import GNavigate from "../components/GNavigate.vue";
+import GStatus from "../components/GStatus.vue";
 
-	export default {
-		name: 'WithHead',
-		components: {
-			Head,
-			Navigation,
-			Status
-		}
-	}
+@Component({
+	components: {
+		GHead,
+		GNavigate,
+		GStatus,
+	},
+})
+export default class Home extends Vue {}
 </script>
 
-<style scoped>
-	#withHead {
-		height: 100%;
-		width: 100%;
-
-		display: grid;
-		grid-template-rows: 80px 40px auto 30px;
-	}
-</style>
+<style lang="scss"></style>

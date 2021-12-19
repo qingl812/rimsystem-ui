@@ -4,15 +4,12 @@
 	</div>
 </template>
 
-<script>
-	export default {
-		name: 'App'
-	}
-</script>
-
-<style scoped>
-	#app {
-		height: 100%;
-		width: 100%;
-	}
+<style lang="scss">
+html body {
+	margin: 0;
+	padding: 0;
+}
+html {
+	min-width: 1022px;
+}
 </style>

@@ -1,187 +1,229 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 <template>
-	<div id="home">
-		<div id="left">
-			<div id="leftOne">请选择查询条件</div>
-			<div id="leftTwo">
-				<div id="leftTwoOne">
-					<label><input type="radio" name="classification" value="1" checked onclick="">区属</label>
-					<label><input type="radio" name="classification" value="2">管理单位</label>
-					<label><input type="radio" name="classification" value="3">名称</label>
+	<div class="home">
+		<el-container direction="horizontal">
+			<el-container id="left_container" direction="vertical">
+				<span>筛选条件</span>
+				<el-divider id="divider_1"></el-divider>
+				<el-select
+					v-model="m_valueArea"
+					clearable
+					placeholder="所属区属"
+					@change="updateRoadList()"
+				>
+					<el-option
+						v-for="item in m_areas"
+						:key="item"
+						:label="item"
+						:value="item"
+					>
+					</el-option>
+				</el-select>
+				<el-select
+					v-model="m_valueUnit"
+					clearable
+					placeholder="管理单位"
+					@change="updateRoadList()"
+				>
+					<el-option
+						v-for="item in m_units"
+						:key="item"
+						:label="item"
+						:value="item"
+					>
+					</el-option>
+				</el-select>
+				<!-- 搜索框 -->
+				<div class="search">
+					<el-input
+						placeholder="道路名称"
+						v-model="m_valueSearch"
+						clearable
+						@change="updateRoadList()"
+					>
+					</el-input>
+					<el-button icon="el-icon-search" circle></el-button>
 				</div>
-				<div id="leftTwoTwo">
-					<select id="roadResp">
-						<option>-----------------道路-----------------</option>
-					</select>
-					<select id="classificationResp">
-						<option>-----------------市区-----------------</option>
-					</select>
-				</div>
-			</div>
-			<div id="leftThree">
-				<div>
-					<img src="/static/img/home/search.png">
-					搜索
-				</div>
-			</div>
-			<div id="leftFour">
-				<div id="list">
-					<router-link :to="{path: '/home', query: {roadId: 1 }}">沙下路</router-link>
-				</div>
-
-				<div id="leftTurnPage">共四页 上页 下页 1/1</div>
-			</div>
-		</div>
-
-		<div id="right"
-			v-bind:style="{ 'grid-template-rows': (typeof(this.$route.query.roadId)!='undefined')?'auto 30px':'auto 0px' }">
-			<baidu-map :center="center" :zoom="zoom" @ready="handler" class="homePageMap"></baidu-map>
-			<div id="rightStatus">
-				<div>
-					<router-link :to="{path: '/docManage', query: {roadId: 1 }}">文档管理</router-link>
-				</div>
-				<div>
-					<router-link :to="{path: '/home', query: {roadId: 1 }}">数据信息</router-link>
-				</div>
-				<div>
-					<router-link :to="{path: '/home', query: {roadId: 1 }}">数据删除</router-link>
-				</div>
-				<div>
-					<router-link :to="{path: '/home', query: {roadId: 1 }}">日常巡查</router-link>
-				</div>
-			</div>
-		</div>
+				<el-divider id="divider_2"></el-divider>
+				<!-- 显示的道路列表 -->
+				<el-main>
+					<el-card>
+						<div class="list" v-loading="m_loading">
+							<div
+								:v-model="m_roadList"
+								v-for="o in m_roadList"
+								:key="o"
+								class="road_item"
+							>
+								<el-link type="primary">{{ o }}</el-link>
+							</div>
+						</div>
+						<el-pagination
+							layout="prev,jumper, next"
+							:page-size="m_roadList_SingleSize"
+							:total="m_roadCount"
+							background
+							small
+							:current-page.sync="m_roadListPage"
+							@current-change="updateRoadList()"
+						>
+						</el-pagination>
+					</el-card>
+				</el-main>
+			</el-container>
+			<el-container id="main_container"> </el-container>
+		</el-container>
 	</div>
 </template>
 
-<script>
-	export default {
-		name: 'Home',
-		data() {
-			return {
-				center: {
-					lng: 0,
-					lat: 0
-				},
-				zoom: 3
-			}
-		},
-		methods: {
-			handler({
-				BMap,
-				map
-			}) {
-				console.log(BMap, map)
-				this.center.lng = 116.404
-				this.center.lat = 39.915
-				this.zoom = 15
-			}
-		}
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import axios, { AxiosResponse } from "axios";
+
+@Component
+export default class Home extends Vue {
+	// 筛选道路
+	private m_valueArea: string;
+	private m_valueUnit: string;
+	private m_valueSearch: string;
+	// 筛选道路的选项
+	private m_areas = new Array<string>();
+	private m_units = new Array<string>();
+	// 道路
+	private m_roadCount = 0;
+	private m_roadList_SingleSize = 10; // 每页显示的道路数量
+	private m_roadList = new Array<string>(this.m_roadList_SingleSize);
+	private m_roadListPage = 1;
+	private m_loading = true; //正在从服务器获取 road 列表
+
+	constructor() {
+		super();
+
+		// 变量初始化
+		this.m_valueArea = "";
+		this.m_valueUnit = "";
+		this.m_valueSearch = "";
+
+		axios({
+			method: "get",
+			url: "/api/area_name_list",
+		}).then((response: AxiosResponse) => {
+			response.data.areas.forEach((element: string) => {
+				this.m_areas.push(element);
+			});
+		});
+
+		axios({
+			method: "get",
+			url: "/api/unit_name_list",
+		}).then((response: AxiosResponse) => {
+			response.data.units.forEach((element: string) => {
+				this.m_units.push(element);
+			});
+		});
 	}
+
+	mounted(): void {
+		this.updateRoadList();
+	}
+
+	public updateRoadList(): void {
+		this.m_loading = true;
+
+		console.log({
+			params: {
+				name: this.m_valueSearch,
+				area: this.m_valueArea,
+				unit: this.m_valueUnit,
+				begin: (this.m_roadListPage - 1) * this.m_roadList_SingleSize,
+				total: this.m_roadList_SingleSize,
+			},
+		});
+
+		axios({
+			method: "get",
+			url: "/api/road_name_list",
+			data: {
+				name: this.m_valueSearch,
+				area: this.m_valueArea,
+				unit: this.m_valueUnit,
+				begin: (this.m_roadListPage - 1) * this.m_roadList_SingleSize,
+				total: this.m_roadList_SingleSize,
+			},
+		}).then((response: AxiosResponse) => {
+			this.m_roadCount = response.data.roadCount;
+			for (let i = 0; i < this.m_roadList_SingleSize; i++) {
+				Vue.set(this.m_roadList, i, response.data.roads[i]);
+			}
+		});
+
+		// setTimeout to debug
+		setTimeout(() => (this.m_loading = false), 300);
+	}
+}
 </script>
 
-<style scoped>
-	#home {
-		width: 100%;
-		height: 100%;
+<style scoped lang="scss">
+#left_container {
+	max-width: 250px;
+	height: calc(100vh - 100px - 61px - 40px);
+	background-color: #e9f6fe;
+}
 
-		display: grid;
-		grid-template-columns: 250px auto;
-	}
+#left_container span {
+	height: 40px;
+	/*Flex布局 垂直居中 水平居中*/
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 
-	#right {
-		display: grid;
-		/* grid-template-rows: auto 30px; */
-		/* grid-template-rows: auto 0px; */
-	}
+#left_container .el-select {
+	margin-bottom: 2px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
 
-	#rightStatus {
-		background-color: rgb(222, 239, 249);
-		display: flex;
-	}
+#left_container .search {
+	box-sizing: content-box;
+	margin-bottom: 2px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
 
-	#rightStatus a {
-		text-decoration: none;
-		color: black;
-	}
+#left_container .search .el-input {
+	width: 80%;
+	margin-right: 5px;
+}
 
-	#rightStatus>div {
-		height: 100%;
-		width: 100px;
-		border-right: 2px solid rgb(161, 188, 216);
-		/* css3子元素水平，垂直居中 */
-		justify-content: center;
-		align-items: center;
-		display: -webkit-flex;
+#divider_1,
+#divider_2 {
+	margin-left: 10%;
+	margin-right: 10%;
+	width: 80%;
+	margin-top: 0;
+	margin-bottom: 5px;
 
-		background-color: rgb(182, 229, 250);
-	}
+	border-top: 1px solid blue;
+}
 
-	#left {
-		background-color: rgb(218, 239, 250);
-		border: 2px solid rgb(161, 188, 216);
+#divider_2 {
+	margin-top: 5px;
+	margin-bottom: 0;
+}
 
-		display: grid;
-		grid-template-rows: 30px 65px 30px auto;
-	}
+#left_container .el-card {
+	position: relative;
+	min-height: 90%;
+}
 
-	#leftOne {
-		border-bottom: 2px solid rgb(161, 188, 216);
-		/* css3子元素水平，垂直居中 */
-		justify-content: center;
-		align-items: center;
-		display: -webkit-flex;
-	}
+#left_container .el-card .el-pagination {
+	position: absolute;
+	bottom: 10px;
+	margin-left: -10px;
+}
 
-	#leftTwoOne {
-		display: grid;
-		grid-template-columns: auto auto auto;
-		margin-left: 10px;
-	}
-
-	#leftTwoTwo>select {
-		width: 200px;
-		margin-left: 25px;
-		margin-right: 25px;
-	}
-
-	#leftThree {
-		margin-top: 5px;
-	}
-
-	#leftThree>div {
-		float: right;
-		background-color: rgb(189, 227, 241);
-		border: 1px solid rgb(70, 163, 189);
-		border-radius: 8px;
-		margin-right: 10px;
-		padding-left: 5px;
-		padding-right: 5px;
-	}
-
-	#leftThree img {
-		height: 1em;
-	}
-
-	#leftFour {
-		border: 1px solid rgb(70, 163, 189);
-		background-color: rgb(238, 248, 255);
-		/* 上边 | 右边 | 下边 | 左边 */
-		margin: 10px 20px 40px 20px;
-		
-		display: grid;
-		grid-template-rows: auto 40px;
-	}
-
-	#list {
-		/* 上边 | 右边 | 下边 | 左边 */
-		margin: 10px 20px 0px 20px;
-		padding: 10px 0px 0px 20px;
-	}
-
-	#leftTurnPage {
-		/* css3子元素水平，垂直居中 */
-		justify-content: center;
-		align-items: center;
-		display: -webkit-flex;
-	}
+#main_container {
+	background-color: bisque;
+}
 </style>
