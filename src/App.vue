@@ -10,6 +10,6 @@ html body {
 	padding: 0;
 }
 html {
-	min-width: 1022px;
+	min-width: 1000px;
 }
 </style>

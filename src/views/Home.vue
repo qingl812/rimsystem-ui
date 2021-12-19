@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 <template>
 	<div class="home">
 		<el-container direction="horizontal">
@@ -164,10 +163,12 @@ export default class Home extends Vue {
 </script>
 
 <style scoped lang="scss">
+@import "../../themes/normal";
+
 #left_container {
 	max-width: 250px;
 	height: calc(100vh - 100px - 61px - 40px);
-	background-color: #e9f6fe;
+	background-color: $--color-primary;
 }
 
 #left_container span {
