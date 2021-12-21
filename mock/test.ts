@@ -1,19 +1,19 @@
 import { AxiosRequestHeaders } from "axios";
 
 export default {
+    // home
     road_name_list: (params: AxiosRequestHeaders): unknown => {
         const info = JSON.parse(params.body);
-
         return {
             roads: [
                 "roads list",
+                "count" + info.count,
+                "page " + info.page,
                 "name " + info.name,
                 "area " + info.area,
                 "unit " + info.unit,
-                "begin " + info.begin,
-                "total " + info.total,
             ],
-            roadCount: 100
+            total: 100
         }
     },
     unit_name_list: (): unknown => {
@@ -36,6 +36,7 @@ export default {
             ],
         }
     },
+    // status
     get_user_info: (): unknown => {
         return {
             name: "admin",
@@ -46,6 +47,13 @@ export default {
     get_system_version: (): unknown => {
         return {
             version: "v1.0"
+        }
+    },
+    // login
+    login: (params: AxiosRequestHeaders): unknown => {
+        const info = JSON.parse(params.body);
+        return {
+            token: info.username + "_" + info.password + '_' + '12:08',
         }
     },
 }

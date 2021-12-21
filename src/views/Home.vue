@@ -129,28 +129,18 @@ export default class Home extends Vue {
 	public updateRoadList(): void {
 		this.m_loading = true;
 
-		console.log({
-			params: {
-				name: this.m_valueSearch,
-				area: this.m_valueArea,
-				unit: this.m_valueUnit,
-				begin: (this.m_roadListPage - 1) * this.m_roadList_SingleSize,
-				total: this.m_roadList_SingleSize,
-			},
-		});
-
 		axios({
 			method: "get",
 			url: "/api/road_name_list",
 			data: {
+				count: this.m_roadList_SingleSize,
+				page: this.m_roadListPage,
 				name: this.m_valueSearch,
 				area: this.m_valueArea,
 				unit: this.m_valueUnit,
-				begin: (this.m_roadListPage - 1) * this.m_roadList_SingleSize,
-				total: this.m_roadList_SingleSize,
 			},
 		}).then((response: AxiosResponse) => {
-			this.m_roadCount = response.data.roadCount;
+			this.m_roadCount = response.data.total;
 			for (let i = 0; i < this.m_roadList_SingleSize; i++) {
 				Vue.set(this.m_roadList, i, response.data.roads[i]);
 			}
