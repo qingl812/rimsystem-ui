@@ -5,9 +5,9 @@
 			mode="horizontal"
 			:router="true"
 			:default-active="$route.path"
-			background-color="#545c64"
-			active-text-color="#facc4b"
-			text-color="#ffffff"
+			text-color="white"
+			active-text-color="#ffd04b"
+			background-color="#43ace5"
 		>
 			<el-menu-item index="/home">首页</el-menu-item>
 			<el-menu-item index="/a">现场签证记录</el-menu-item>
@@ -22,4 +22,6 @@
 	</div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import "themes/normal.scss";
+</style>

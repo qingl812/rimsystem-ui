@@ -10,17 +10,17 @@ const routes: Array<RouteConfig> = [
 	},
 	{
 		path: '*',
-		component: () => import("../views/WithHead.vue"),
+		component: () => import("@/views/WithHead.vue"),
 		children: [
 			{
 				path: '/home',
-				component: () => import("../views/Home.vue"),
+				component: () => import("@/views/Home.vue"),
 				meta: {
 					title: "主页 - 道路信息管理系统",
 				},
 			}, {
 				path: '/test',
-				component: () => import("../views/Test.vue"),
+				component: () => import("@/views/Test.vue"),
 				meta: {
 					title: "test - 道路信息管理系统",
 				},
@@ -30,7 +30,7 @@ const routes: Array<RouteConfig> = [
 	{
 		path: "*",
 		name: "NotFound",
-		component: () => import("../views/NotFound.vue"),
+		component: () => import("@/views/NotFound.vue"),
 	},
 ];
 

@@ -163,12 +163,12 @@ export default class Home extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "../../themes/normal";
+@import "themes/normal.scss";
 
 #left_container {
 	max-width: 250px;
 	height: calc(100vh - 100px - 61px - 40px);
-	background-color: $--color-primary;
+	background-color: $home_left_background;
 }
 
 #left_container span {
@@ -216,6 +216,7 @@ export default class Home extends Vue {
 #left_container .el-card {
 	position: relative;
 	min-height: 90%;
+	background-color: $home_left_list_background;
 }
 
 #left_container .el-card .el-pagination {

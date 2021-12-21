@@ -52,9 +52,11 @@ export default class GStatus extends Vue {
 </script>
 
 <style scoped lang="scss">
+@import "themes/normal.scss";
+
 .gstatus {
 	position: fixed;
-	background-color: #409eff;
+	background-color: $status_background;
 	bottom: 0px;
 	width: 100%;
 	height: 40px;

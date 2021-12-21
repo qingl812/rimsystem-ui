@@ -2,7 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import ElementUI from "element-ui";
-import '../themes/normal.scss'
+import '../themes/element_ui.scss'
 import { NavigationGuardNext, Route } from "vue-router";
 
 if (process.env.NODE_ENV === 'development') {
