@@ -1,80 +1,125 @@
 <template>
-    <el-container class="roadInformation">
-        <el-aside>
-            <div class="title centered">道路资料</div>
-            <div class="main">
-                <div>
-                    <div class="text centered">
-                        <ion-icon name="caret-down-circle-outline"></ion-icon>
-                        <span>道路信息</span>
-                    </div>
-                    <div class="text centered">
-                        <ion-icon name="caret-down-circle-outline"></ion-icon>
-                        <span>文档资料</span>
-                    </div>
-                </div>
-            </div>
-        </el-aside>
-        <el-main>
-            <div class="title centered-vertical">
-                <ion-icon name="list-outline"></ion-icon>
-                <span>道路信息列表</span>
-            </div>
-            <el-row :gutter="20" class="search">
-                <el-col :span="4" class="centered-vertical">
-                    <el-input
-                        placeholder="道路名称"
-                        v-model="m_search_name"
-                        clearable
-                        @change="updateRoadList()"
-                    >
-                    </el-input>
-                </el-col>
-                <el-col :span="4" class="centered-vertical">
-                    <el-select
-                        v-model="m_search_type"
-                        clearable
-                        placeholder="道路类型"
-                        @change="updateRoadList()"
-                    >
-                        <el-option
-                            v-for="item in m_road_types"
-                            :key="item"
-                            :label="item"
-                            :value="item"
-                        >
-                        </el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="4" class="centered-vertical">
-                    <el-select
-                        v-model="m_search_type"
-                        clearable
-                        placeholder="道路养护等级"
-                        @change="updateRoadList()"
-                    >
-                        <el-option
-                            v-for="item in m_search_mlevel"
-                            :key="item"
-                            :label="item"
-                            :value="item"
-                        >
-                        </el-option>
-                    </el-select>
-                </el-col>
-                <el-col :span="1.6" class="centered-vertical">
-                    <el-button
-                        type="primary"
-                        icon="el-icon-search"
-                        size="small"
-                    >
-                        查询
-                    </el-button>
-                </el-col>
-            </el-row>
-            <div>列表</div>
-        </el-main>
-    </el-container>
+	<el-container class="roadInformation">
+		<el-aside>
+			<div class="title centered">道路资料</div>
+			<div class="main">
+				<div>
+					<div class="text centered">
+						<ion-icon name="caret-down-circle-outline"></ion-icon>
+						<span>道路信息</span>
+					</div>
+					<div class="text centered">
+						<ion-icon name="caret-down-circle-outline"></ion-icon>
+						<span>文档资料</span>
+					</div>
+				</div>
+			</div>
+		</el-aside>
+		<el-main>
+			<div class="title centered-vertical">
+				<ion-icon name="list-outline"></ion-icon>
+				<span>道路信息列表</span>
+			</div>
+
+			<el-row :gutter="20" class="search">
+				<el-col :span="4" class="centered-vertical">
+					<el-input
+						placeholder="道路名称"
+						v-model="m_search_name"
+						clearable
+						@change="updateRoadTable()"
+					>
+					</el-input>
+				</el-col>
+				<el-col :span="4" class="centered-vertical">
+					<el-select
+						v-model="m_search_type"
+						clearable
+						placeholder="道路类型"
+						@change="updateRoadTable()"
+					>
+						<el-option
+							v-for="item in m_road_types"
+							:key="item"
+							:label="item"
+							:value="item"
+						>
+						</el-option>
+					</el-select>
+				</el-col>
+				<el-col :span="4" class="centered-vertical">
+					<el-select
+						v-model="m_search_mlevel"
+						clearable
+						placeholder="道路养护等级"
+						@change="updateRoadTable()"
+					>
+						<el-option
+							v-for="item in m_road_mlevels"
+							:key="item"
+							:label="item"
+							:value="item"
+						>
+						</el-option>
+					</el-select>
+				</el-col>
+				<el-col :span="1.6" class="centered-vertical">
+					<el-button
+						type="primary"
+						icon="el-icon-search"
+						@click="updateRoadTable()"
+					>
+						查询
+					</el-button>
+				</el-col>
+			</el-row>
+
+			<el-table
+				class="road-table"
+				:data="m_road_table"
+				stripe
+				border
+				highlight-current-row
+				v-loading="m_road_table_loading"
+			>
+				<el-table-column prop="check" type="selection" width="60">
+				</el-table-column>
+				<el-table-column prop="id" label="道路编号"> </el-table-column>
+				<el-table-column prop="name" label="道路名称">
+				</el-table-column>
+				<el-table-column prop="type" label="道路类型">
+				</el-table-column>
+				<el-table-column prop="mlevel" label="道路养护等级">
+				</el-table-column>
+				<el-table-column prop="unit" label="管理单位">
+				</el-table-column>
+			</el-table>
+
+			<el-pagination
+				:page-size="m_table_page_size"
+				:total="m_table_total"
+				background
+				:current-page.sync="m_current_page"
+				@current-change="updateRoadTable()"
+				layout="total, prev, pager, next, jumper"
+			>
+			</el-pagination>
+
+			<div class="option">
+				<div class="centered">
+					<el-button type="primary" plain size="medium">
+						新增
+					</el-button>
+					<el-button type="primary" plain size="medium">
+						查看
+					</el-button>
+					<el-button type="primary" plain size="medium">
+						删除
+					</el-button>
+				</div>
+			</div>
+		</el-main>
+	</el-container>
 </template>
 
 <script lang="ts">
@@ -83,104 +128,152 @@ import axios, { AxiosResponse } from "axios";
 
 @Component
 export default class RoadInformation extends Vue {
-    private m_search_name: string;
-    private m_search_type: string;
-    private m_search_mlevel: string;
-    private m_road_types = new Array<string>();
-    private m_road_mlevels = new Array<string>();
+	// search
+	private m_search_name = "";
+	private m_search_type = "";
+	private m_search_mlevel = "";
+	private m_road_types = new Array<string>();
+	private m_road_mlevels = new Array<string>();
+	// table
+	private m_road_table = new Array<unknown>();
+	private m_road_table_loading = true;
+	// 分页
+	private m_table_page_size = 0;
+	private m_table_total = 0;
+	private m_current_page = 1;
 
-    constructor() {
-        super();
+	constructor() {
+		super();
 
-        this.m_search_name = "";
-        this.m_search_type = "";
-        this.m_search_mlevel = "";
+		window.addEventListener("resize", () => {
+			this.updatePageSize();
+		});
+	}
 
-        axios({
-            method: "get",
-            url: "/api/road_types_list",
-        }).then((response: AxiosResponse) => {
-            response.data.areas.forEach((element: string) => {
-                this.m_road_types.push(element);
-            });
-        });
+	mounted(): void {
+		axios({
+			method: "get",
+			url: "/api/types_name_list",
+		}).then((response: AxiosResponse) => {
+			response.data.types.forEach((element: string) => {
+				this.m_road_types.push(element);
+			});
+		});
 
-        axios({
-            method: "get",
-            url: "/api/road_mlevels_list",
-        }).then((response: AxiosResponse) => {
-            response.data.units.forEach((element: string) => {
-                this.m_road_mlevels.push(element);
-            });
-        });
-    }
+		axios({
+			method: "get",
+			url: "/api/mlevels_name_list",
+		}).then((response: AxiosResponse) => {
+			response.data.mlevels.forEach((element: string) => {
+				this.m_road_mlevels.push(element);
+			});
+		});
 
-    public updateRoadList(): void {
-        var a;
-    }
+		this.updatePageSize();
+	}
+
+	public updatePageSize(): void {
+		let table_div = document.getElementsByClassName(
+			"road-table"
+		)[0] as HTMLElement;
+		this.m_table_page_size = Math.floor(table_div.offsetHeight / 48) - 1;
+		this.updateRoadTable();
+	}
+
+	public updateRoadTable(): void {
+		this.m_road_table_loading = true;
+
+		// console.log(this.m_table_page_size);
+		this.m_road_table = new Array<string>(this.m_table_page_size);
+		axios({
+			method: "get",
+			url: "/api/road_info_list",
+			data: {
+				page_size: this.m_table_page_size,
+				page: this.m_current_page,
+				name: this.m_search_name,
+				type: this.m_search_type,
+				mlevel: this.m_search_mlevel,
+			},
+		}).then((response: AxiosResponse) => {
+			this.m_table_total = response.data.total;
+			for (let i = 0; i < response.data.roads.length; i++) {
+				Vue.set(this.m_road_table, i, response.data.roads[i]);
+			}
+		});
+
+		// setTimeout to debug
+		setTimeout(() => (this.m_road_table_loading = false), 300);
+	}
 }
 </script>
 
 <style scoped lang="scss">
 @import "themes/normal.scss";
 .roadInformation > .el-aside {
-    height: $gmain-height;
-    max-width: $gaside-width;
-    background-color: $aside-background-color;
+	height: $gmain-height;
+	max-width: $gaside-width;
+	background-color: $aside-background-color;
 
-    .title {
-        height: 40px;
-        color: black;
-        border-bottom: $border-divider;
-    }
+	.title {
+		height: 40px;
+		color: black;
+		border-bottom: $border-divider;
+	}
 
-    .main {
-        height: calc(100% - 40px);
+	.main {
+		height: calc(100% - 40px);
 
-        .text {
-            width: 80%;
-            margin: auto;
-            color: #4c788d;
-            height: 40px;
+		.text {
+			width: 80%;
+			margin: auto;
+			color: #4c788d;
+			height: 40px;
 
-            border-bottom: $border-divider;
+			border-bottom: $border-divider;
 
-            span {
-                margin-left: 5px;
-            }
-        }
-    }
+			span {
+				margin-left: 5px;
+			}
+		}
+	}
 }
 
 .roadInformation > .el-main {
-    padding-top: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+	background-color: $gmain-background-color;
 
-    .title {
-        height: 40px;
+	.title {
+		height: 40px;
 
-        span {
-            margin-left: 5px;
-        }
-    }
+		span {
+			margin-left: 5px;
+		}
+	}
 
-    .search {
-        height: 60px;
+	.search {
+		.el-input,
+		.el-select {
+			width: 100%;
+		}
+	}
 
-        .el-input,
-        .el-select {
-            width: 100%;
-        }
+	.road-table {
+		margin-top: 10px;
+		height: calc(100% - 172px);
+	}
 
-        .el-col {
-            border: $border-divider;
-            border-right: none;
-            height: 100%;
-            background-color: #f0f8fe;
-        }
+	.pagination {
+		width: 100%;
+		background-color: lemonchiffon;
+	}
 
-        .el-col:last-child {
-            border-right: $border-divider;
-        }
-    }
+	.el-pagination {
+		display: flex;
+		align-items: center;
+		justify-content: right;
+		height: 40px;
+	}
 }
 </style>

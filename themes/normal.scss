@@ -39,6 +39,8 @@ $gstatus-height: 40px;
 $gmain-height: calc(
     100vh - #{$ghead-height} - #{$gnavigate-height} - #{$gstatus-height}
 );
-// 侧边栏背景颜色
+// 侧边栏
 $aside-background-color: #ddefff;
 $gaside-width: 250px;
+// 主要部分
+$gmain-background-color: bisque;
