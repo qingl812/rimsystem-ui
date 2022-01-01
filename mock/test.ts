@@ -36,7 +36,7 @@ export default {
             ],
         }
     },
-    // status
+    // status   
     get_user_info: (): unknown => {
         return {
             name: "admin",
@@ -53,7 +53,7 @@ export default {
     login: (params: AxiosRequestHeaders): unknown => {
         const info = JSON.parse(params.body);
         return {
-            token: info.username + "_" + info.password + '_' + '12:08',
+            authentication: info.username + "_" + info.password + '_' + '12:08',
         }
     },
 }

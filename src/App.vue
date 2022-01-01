@@ -1,15 +1,15 @@
 <template>
-	<div id="app">
-		<router-view></router-view>
-	</div>
+    <div id="app">
+        <router-view></router-view>
+    </div>
 </template>
 
+<script>
+import { Vue } from "vue-property-decorator";
+
+export default class App extends Vue {}
+</script>
+
 <style lang="scss">
-html body {
-	margin: 0;
-	padding: 0;
-}
-html {
-	min-width: 1000px;
-}
+@import "themes/normal.scss";
 </style>
