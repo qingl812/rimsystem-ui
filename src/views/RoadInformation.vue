@@ -27,7 +27,7 @@
 						placeholder="道路名称"
 						v-model="m_search_name"
 						clearable
-						@change="updateRoadTable()"
+						@change="updateTable()"
 					>
 					</el-input>
 				</el-col>
@@ -36,7 +36,7 @@
 						v-model="m_search_type"
 						clearable
 						placeholder="道路类型"
-						@change="updateRoadTable()"
+						@change="updateTable()"
 					>
 						<el-option
 							v-for="item in m_road_types"
@@ -52,7 +52,7 @@
 						v-model="m_search_mlevel"
 						clearable
 						placeholder="道路养护等级"
-						@change="updateRoadTable()"
+						@change="updateTable()"
 					>
 						<el-option
 							v-for="item in m_road_mlevels"
@@ -67,7 +67,7 @@
 					<el-button
 						type="primary"
 						icon="el-icon-search"
-						@click="updateRoadTable()"
+						@click="updateTable()"
 					>
 						查询
 					</el-button>
@@ -75,23 +75,38 @@
 			</el-row>
 
 			<el-table
-				class="road-table"
-				:data="m_road_table"
+				class="m-table"
+				:data="m_table"
 				stripe
 				border
 				highlight-current-row
-				v-loading="m_road_table_loading"
+				v-loading="m_table_loading"
 			>
-				<el-table-column prop="check" type="selection" width="60">
+				<el-table-column
+					prop="check"
+					type="selection"
+					align="center"
+					width="60"
+				>
 				</el-table-column>
-				<el-table-column prop="id" label="道路编号"> </el-table-column>
-				<el-table-column prop="name" label="道路名称">
+				<el-table-column
+					prop="id"
+					label="道路编号"
+					align="center"
+					width="100"
+				>
 				</el-table-column>
-				<el-table-column prop="type" label="道路类型">
+				<el-table-column prop="name" label="道路名称" align="center">
 				</el-table-column>
-				<el-table-column prop="mlevel" label="道路养护等级">
+				<el-table-column prop="type" label="道路类型" align="center">
 				</el-table-column>
-				<el-table-column prop="unit" label="管理单位">
+				<el-table-column
+					prop="mlevel"
+					label="道路养护等级"
+					align="center"
+				>
+				</el-table-column>
+				<el-table-column prop="unit" label="管理单位" align="center">
 				</el-table-column>
 			</el-table>
 
@@ -100,7 +115,7 @@
 				:total="m_table_total"
 				background
 				:current-page.sync="m_current_page"
-				@current-change="updateRoadTable()"
+				@current-change="updateTable()"
 				layout="total, prev, pager, next, jumper"
 			>
 			</el-pagination>
@@ -135,8 +150,8 @@ export default class RoadInformation extends Vue {
 	private m_road_types = new Array<string>();
 	private m_road_mlevels = new Array<string>();
 	// table
-	private m_road_table = new Array<unknown>();
-	private m_road_table_loading = true;
+	private m_table = new Array<unknown>();
+	private m_table_loading = true;
 	// 分页
 	private m_table_page_size = 0;
 	private m_table_total = 0;
@@ -169,22 +184,21 @@ export default class RoadInformation extends Vue {
 			});
 		});
 
-		this.updatePageSize();
+		this.updateTable();
 	}
 
 	public updatePageSize(): void {
 		let table_div = document.getElementsByClassName(
-			"road-table"
+			"m-table"
 		)[0] as HTMLElement;
 		this.m_table_page_size = Math.floor(table_div.offsetHeight / 48) - 1;
-		this.updateRoadTable();
+		this.updateTable();
 	}
 
-	public updateRoadTable(): void {
-		this.m_road_table_loading = true;
+	public updateTable(): void {
+		this.m_table_loading = true;
 
-		// console.log(this.m_table_page_size);
-		this.m_road_table = new Array<string>(this.m_table_page_size);
+		this.m_table = new Array<string>(this.m_table_page_size);
 		axios({
 			method: "get",
 			url: "/api/road_info_list",
@@ -198,12 +212,12 @@ export default class RoadInformation extends Vue {
 		}).then((response: AxiosResponse) => {
 			this.m_table_total = response.data.total;
 			for (let i = 0; i < response.data.roads.length; i++) {
-				Vue.set(this.m_road_table, i, response.data.roads[i]);
+				Vue.set(this.m_table, i, response.data.roads[i]);
 			}
 		});
 
 		// setTimeout to debug
-		setTimeout(() => (this.m_road_table_loading = false), 300);
+		setTimeout(() => (this.m_table_loading = false), 300);
 	}
 }
 </script>
@@ -259,7 +273,7 @@ export default class RoadInformation extends Vue {
 		}
 	}
 
-	.road-table {
+	.m-table {
 		margin-top: 10px;
 		height: calc(100% - 172px);
 	}

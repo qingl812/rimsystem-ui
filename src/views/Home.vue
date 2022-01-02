@@ -84,7 +84,9 @@
 			>
 			</baidu-map>
 			<div class="map-status">
-				<el-button type="primary">文档管理</el-button>
+				<el-button type="primary" @click="jump('doc-manage')"
+					>文档管理</el-button
+				>
 				<el-button type="primary">数据信息</el-button>
 				<el-button type="primary">数据删除</el-button>
 				<el-button type="primary">日常巡查</el-button>
@@ -243,6 +245,13 @@ export default class Home extends Vue {
 				div.style.color = GlobalScss.link_color;
 			}
 		}
+	}
+
+	jump(target: string): void {
+		this.$router.push({
+			path: target,
+			query: { road_name: this.m_current_road_name },
+		});
 	}
 }
 </script>

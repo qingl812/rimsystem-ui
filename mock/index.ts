@@ -15,6 +15,11 @@ Mock.mock("/api/road_info_list", "get", test.road_info_list);
 Mock.mock("/api/types_name_list", "get", test.types_name_list);
 Mock.mock("/api/mlevels_name_list", "get", test.mlevels_name_list);
 
+// doc manage
+Mock.mock("/api/file_types_list", "get", test.file_types_list);
+Mock.mock("/api/file_info_list", "get", test.file_info_list);
+Mock.mock("/api/file_download", "get", test.file_download);
+
 // login
 Mock.mock("/api/login", "post", test.login);
 export default Mock;

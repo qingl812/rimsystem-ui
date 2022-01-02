@@ -52,6 +52,7 @@ import BaiduMap from "vue-baidu-map";
 Vue.use(BaiduMap, { ak: "HpA4MtzOdUZ9Ywnum4HHwtnbwcIrn0Hc" });
 
 Vue.config.productionTip = false;
+Vue.config.ignoredElements = [/^ion-/]; //ion-icon
 new Vue({
 	router,
 	render: (h) => h(App),

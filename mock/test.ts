@@ -99,4 +99,56 @@ export default {
 			mlevels: ["养护等级A", "养护等级B", "养护等级C", "养护等级D"],
 		};
 	},
+	file_types_list: (params: AxiosRequestHeaders): unknown => {
+		const info = JSON.parse(params.body);
+		return {
+			road_name: info.road_name,
+			types: [
+				"合同文件",
+				"项目档案",
+				"实施记录",
+				"资金申请表",
+				"资金支付记录",
+				"维护养护资料",
+			],
+		};
+	},
+	file_info_list: (params: AxiosRequestHeaders): unknown => {
+		const info = JSON.parse(params.body);
+		return {
+			files: [
+				{
+					id: 123,
+					name: "page_size " + info.page_size,
+					format: "format",
+					time: "2021-01-02",
+				},
+				{
+					id: 123,
+					name: "page " + info.page,
+					format: "format",
+					time: "2021-01-02",
+				},
+				{
+					id: 123,
+					name: "name " + info.name,
+					format: "format",
+					time: "2021-01-02",
+				},
+				{
+					id: 123,
+					name: "type " + info.type,
+					format: "format",
+					time: "2021-01-02",
+				},
+			],
+			total: 100,
+		};
+	},
+	file_download: (params: AxiosRequestHeaders): unknown => {
+		const info = JSON.parse(params.body);
+		return {
+			url: "url_" + info.file_id,
+		};
+	},
 };
