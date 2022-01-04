@@ -111,7 +111,12 @@
 
 			<div class="option">
 				<div class="centered">
-					<el-button type="primary" plain size="medium">
+					<el-button
+						type="primary"
+						plain
+						size="medium"
+						@click="jump('doc-new')"
+					>
 						新增
 					</el-button>
 					<el-button type="primary" plain size="medium">
@@ -197,6 +202,7 @@ export default class RoadInformation extends Vue {
 		setTimeout(() => (this.m_table_loading = false), 300);
 	}
 
+	// eslint-disable-next-line
 	download(index: number, scope: any): void {
 		axios({
 			method: "get",
@@ -206,6 +212,13 @@ export default class RoadInformation extends Vue {
 			},
 		}).then((response: AxiosResponse) => {
 			window.open(response.data.url, "_blank")?.location;
+		});
+	}
+
+	jump(target: string): void {
+		this.$router.push({
+			path: target,
+			query: { road_name: this.$route.query.road_name },
 		});
 	}
 }

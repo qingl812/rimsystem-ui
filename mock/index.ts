@@ -19,6 +19,7 @@ Mock.mock("/api/mlevels_name_list", "get", test.mlevels_name_list);
 Mock.mock("/api/file_types_list", "get", test.file_types_list);
 Mock.mock("/api/file_info_list", "get", test.file_info_list);
 Mock.mock("/api/file_download", "get", test.file_download);
+Mock.mock("/api/file_upload", "post", test.file_upload);
 
 // login
 Mock.mock("/api/login", "post", test.login);

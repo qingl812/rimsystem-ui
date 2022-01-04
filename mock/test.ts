@@ -151,4 +151,9 @@ export default {
 			url: "url_" + info.file_id,
 		};
 	},
+	file_upload: (params: AxiosRequestHeaders): unknown => {
+		// mockjax只支持ajax请求，不支持form表单，所以失败。
+		params;
+		return;
+	},
 };

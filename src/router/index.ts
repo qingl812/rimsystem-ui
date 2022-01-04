@@ -41,6 +41,13 @@ const routes: Array<RouteConfig> = [
 				},
 			},
 			{
+				path: "/doc-new",
+				component: () => import("@/views/DocNew.vue"),
+				meta: {
+					title: "新增文档 - 道路信息管理系统",
+				},
+			},
+			{
 				path: "/test",
 				component: () => import("@/views/Test.vue"),
 				meta: {
