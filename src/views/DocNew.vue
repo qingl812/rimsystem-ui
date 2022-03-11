@@ -3,7 +3,7 @@
 		<div class="title centered-vertical">
 			<ion-icon name="list-outline"></ion-icon>
 			<span>
-				{{ this.$route.query.road_name + " - 新增" }}
+				{{ m_file_types.road_name + " - 新增" }}
 			</span>
 		</div>
 		<el-form :model="m_form" ref="form" label-width="80px">
@@ -114,7 +114,7 @@
 				<el-button type="primary" @click="submitUpload()">
 					保存
 				</el-button>
-				<el-button>取消</el-button>
+				<el-button @click="cancel()">取消</el-button>
 			</el-form-item>
 		</el-form>
 	</div>
@@ -122,17 +122,19 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import axios, { AxiosResponse } from "axios";
+import { MyAxios } from "../typings/MyAxios";
 
 @Component
 export default class DocNew extends Vue {
+	private m_my_axios = new MyAxios();
+
 	private m_file_types = {
 		road_name: "",
-		types: [],
+		types: new Array<string>(),
 	};
 	private m_units = new Array<string>();
 	private m_form = {
-		road_name: this.$route.query.road_name,
+		road_name: this.m_file_types.road_name,
 		name: "",
 		type: "",
 		unit: "",
@@ -148,23 +150,20 @@ export default class DocNew extends Vue {
 	}
 
 	mounted(): void {
-		axios({
-			method: "get",
-			url: "/api/file_types_list",
-			data: {
-				road_name: this.$route.query.road_name,
-			},
-		}).then((response: AxiosResponse) => {
-			this.m_file_types = response.data;
+		this.m_my_axios.file_types_list((data) => {
+			this.m_file_types.types = data;
 		});
 
-		axios({
-			method: "get",
-			url: "/api/unit_name_list",
-		}).then((response: AxiosResponse) => {
-			response.data.units.forEach((element: string) => {
-				this.m_units.push(element);
-			});
+		let road_id =
+			typeof this.$route.query.road_id == "string"
+				? this.$route.query.road_id
+				: "";
+		this.m_my_axios.road_info(road_id, (data) => {
+			this.m_file_types.road_name = data.name;
+		});
+
+		this.m_my_axios.unit_name_list((data) => {
+			this.m_units = data;
 		});
 	}
 
@@ -183,6 +182,10 @@ export default class DocNew extends Vue {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let div = this.$refs.upload as any;
 		div.submit();
+	}
+
+	cancel(): void {
+		this.$router.go(-1);
 	}
 }
 </script>

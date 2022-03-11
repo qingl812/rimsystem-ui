@@ -49,23 +49,23 @@
 			<el-card class="road-list-card" v-loading="m_loading">
 				<div>
 					<div
-						:v-model="m_roadList"
-						v-for="o in m_roadList"
-						:key="o"
+						:v-model="m_road_list"
+						v-for="o in m_road_list"
+						:key="o.id"
 						class="road_item"
 					>
 						<el-link
 							type="primary"
 							class="road-item-link"
-							@click="to_road(o)"
-							>{{ o }}</el-link
+							@click="to_road(o.id)"
+							>{{ o.name }}</el-link
 						>
 					</div>
 				</div>
 				<el-pagination
 					layout="prev,jumper, next"
 					:page-size="m_page_size"
-					:total="m_roadCount"
+					:total="m_road_list.length"
 					background
 					small
 					:current-page.sync="m_current_page"
@@ -87,21 +87,30 @@
 				<el-button type="primary" @click="jump('doc-manage')"
 					>文档管理</el-button
 				>
-				<el-button type="primary">数据信息</el-button>
-				<el-button type="primary">数据删除</el-button>
-				<el-button type="primary">日常巡查</el-button>
+				<el-button type="primary" @click="jump('data-information')"
+					>数据信息</el-button
+				>
+				<el-button type="primary" @click="jump('data-information')"
+					>数据删除</el-button
+				>
+				<el-button type="primary" @click="jump('daily-inspection')"
+					>日常巡查</el-button
+				>
 			</div>
 		</el-main>
 	</el-container>
 </template>
 
 <script lang="ts">
+import { Road } from "../typings/Road";
 import { Component, Vue } from "vue-property-decorator";
-import axios, { AxiosResponse } from "axios";
 import GlobalScss from "../../themes/normal.scss";
+import { MyAxios } from "../typings/MyAxios";
 
 @Component
 export default class Home extends Vue {
+	private m_my_axios = new MyAxios();
+
 	// 筛选道路
 	private m_valueArea = "";
 	private m_valueUnit = "";
@@ -110,16 +119,15 @@ export default class Home extends Vue {
 	private m_areas = new Array<string>();
 	private m_units = new Array<string>();
 	// 道路
-	private m_roadCount = 0;
+	private m_road_list = new Array<Road>();
 	private m_page_size = 0; // 每页显示的道路数量
-	private m_roadList = new Array<string>();
 	private m_current_page = 1;
 	private m_loading = true; //正在从服务器获取 road 列表
 	// map
 	private m_map_center = { lng: 0, lat: 0 };
 	private m_map_zoom = 3;
 	// 选中的道路
-	private m_current_road_name: string | null = null;
+	private m_current_road_id: string | null = null;
 
 	constructor() {
 		super();
@@ -130,31 +138,20 @@ export default class Home extends Vue {
 	}
 
 	mounted(): void {
-		axios({
-			method: "get",
-			url: "/api/area_name_list",
-		}).then((response: AxiosResponse) => {
-			response.data.areas.forEach((element: string) => {
-				this.m_areas.push(element);
-			});
-		});
-
-		axios({
-			method: "get",
-			url: "/api/unit_name_list",
-		}).then((response: AxiosResponse) => {
-			response.data.units.forEach((element: string) => {
-				this.m_units.push(element);
-			});
-		});
-
 		this.updatePageSize();
 
-		let name = this.$route.query.road_name;
-		if (typeof name === "string") {
-			this.m_current_road_name = name;
+		this.m_my_axios.area_name_list((data) => {
+			this.m_areas = data;
+		});
+		this.m_my_axios.unit_name_list((data) => {
+			this.m_units = data;
+		});
+
+		let id = this.$route.query.road_id;
+		if (typeof id === "string") {
+			this.m_current_road_id = id;
 		} else {
-			this.m_current_road_name = null;
+			this.m_current_road_id = null;
 		}
 	}
 
@@ -169,23 +166,16 @@ export default class Home extends Vue {
 	public updateRoadList(): void {
 		this.m_loading = true;
 
-		this.m_roadList = new Array<string>(this.m_page_size);
-		axios({
-			method: "get",
-			url: "/api/road_name_list",
-			data: {
-				page_size: this.m_page_size,
-				page: this.m_current_page,
-				name: this.m_valueSearch,
-				area: this.m_valueArea,
-				unit: this.m_valueUnit,
-			},
-		}).then((response: AxiosResponse) => {
-			this.m_roadCount = response.data.total;
-			for (let i = 0; i < response.data.roads.length; i++) {
-				Vue.set(this.m_roadList, i, response.data.roads[i]);
+		this.m_my_axios.road_name_list(
+			this.m_page_size,
+			this.m_current_page,
+			this.m_valueSearch,
+			this.m_valueArea,
+			this.m_valueUnit,
+			(data) => {
+				this.m_road_list = data;
 			}
-		});
+		);
 
 		// setTimeout to debug
 		setTimeout(() => (this.m_loading = false), 300);
@@ -201,36 +191,36 @@ export default class Home extends Vue {
 		this.m_map_zoom = 15;
 	}
 
-	to_road(road_name: string | null): void {
-		this.m_current_road_name = road_name;
+	to_road(road_id: string | null): void {
+		this.m_current_road_id = road_id;
 
-		if (typeof this.m_current_road_name === "string") {
+		if (typeof this.m_current_road_id === "string") {
 			// 去掉首尾的空格
-			let trim = this.m_current_road_name.trim();
-			this.m_current_road_name = trim.length == 0 ? null : trim;
+			let trim = this.m_current_road_id.trim();
+			this.m_current_road_id = trim.length == 0 ? null : trim;
 		}
 
-		if (typeof this.m_current_road_name === "string") {
+		if (typeof this.m_current_road_id === "string") {
 			// 如果已经存在参数
-			if (typeof this.$route.query.road_name === "string") {
-				this.$route.query.road_name = this.m_current_road_name;
+			if (typeof this.$route.query.road_id === "string") {
+				this.$route.query.road_id = this.m_current_road_id;
 			} else {
 				this.$router.replace({
 					query: {
 						...this.$route.query,
-						road_name: this.m_current_road_name,
+						road_id: this.m_current_road_id,
 					},
 				});
 			}
 		} else {
-			if (typeof this.$route.query.road_name === "string") {
+			if (typeof this.$route.query.road_id === "string") {
 				this.$router.replace({ query: {} });
 			}
 		}
 
 		// 控制 status 的显示
 		let div_map = document.getElementById("bm-view") as HTMLElement;
-		if (typeof this.m_current_road_name === "string") {
+		if (typeof this.m_current_road_id === "string") {
 			div_map.style.height = "calc(100% - 40px)";
 		} else {
 			div_map.style.height = "100%";
@@ -239,7 +229,7 @@ export default class Home extends Vue {
 		let divs = document.getElementsByClassName("road-item-link");
 		for (let i = 0; i < divs.length; i++) {
 			let div = divs[i] as HTMLElement;
-			if (this.m_current_road_name === div.innerText) {
+			if (this.m_current_road_id === div.innerText) {
 				div.style.color = GlobalScss.active_link_color;
 			} else {
 				div.style.color = GlobalScss.link_color;
@@ -250,7 +240,7 @@ export default class Home extends Vue {
 	jump(target: string): void {
 		this.$router.push({
 			path: target,
-			query: { road_name: this.m_current_road_name },
+			query: { road_id: this.m_current_road_id },
 		});
 	}
 }

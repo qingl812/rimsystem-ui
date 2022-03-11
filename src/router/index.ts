@@ -41,6 +41,27 @@ const routes: Array<RouteConfig> = [
 				},
 			},
 			{
+				path: "/data-information",
+				component: () => import("@/views/DataInformation.vue"),
+				meta: {
+					title: "数据信息 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/daily-inspection",
+				component: () => import("@/views/DailyInspection.vue"),
+				meta: {
+					title: "日常巡查 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/daily-inspection-add",
+				component: () => import("@/views/DailyInspectionAdd.vue"),
+				meta: {
+					title: "编辑巡查信息 - 道路信息管理系统",
+				},
+			},
+			{
 				path: "/doc-new",
 				component: () => import("@/views/DocNew.vue"),
 				meta: {

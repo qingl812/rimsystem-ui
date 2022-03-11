@@ -1,26 +1,13 @@
 # rimsystem-ui
 
-## Project setup
-```shell
-npm install
-```
+## build
 
-### Compiles and hot-reloads for development
-```shell
-npm run serve
-```
+- 下载依赖 `npm install`
+- 热启动开发环境 `npm run serve`
+- api docs serve `npm run docs` 
 
-### Compiles and minifies for production
-```shell
-npm run build
-```
+## 注意事项
 
-### Lints and fixes files
-```shell
-npm run lint
-```
+- 如果 `npm install` 失败，请尝试更换为淘宝镜像（设置代理下载可能还是失败）
 
-### api docs serve
-```shell
-npm run docs
-```
+

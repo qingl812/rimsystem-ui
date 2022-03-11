@@ -23,4 +23,15 @@ Mock.mock("/api/file_upload", "post", test.file_upload);
 
 // login
 Mock.mock("/api/login", "post", test.login);
+
+// DataInformation
+Mock.mock("/api/maintenance_levels_name_list", "get", test.maintenance_levels_name_list);
+Mock.mock("/api/surface_types_name_list", "get", test.surface_types_name_list);
+Mock.mock("/api/sidewalk_tile_types_name_list", "get", test.sidewalk_tile_types_name_list);
+Mock.mock("/api/blind_road_tile_types_name_list", "get", test.blind_road_tile_types_name_list);
+Mock.mock("/api/curb_types_name_list", "get", test.curb_types_name_list);
+Mock.mock("/api/road_info", "get", test.road_info);
+
+// DailyInspection
+Mock.mock("/api/daily_inspection_info_list", "get", test.daily_inspection_info_list);
 export default Mock;

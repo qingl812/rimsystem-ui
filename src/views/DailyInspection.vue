@@ -1,51 +1,12 @@
 <template>
-	<el-container class="doc-manage">
+	<el-container class="daily-inspection">
 		<el-aside>
-			<div class="title centered">
-				<ion-icon name="document-text-outline"></ion-icon>
-				<span>请选择文档分类</span>
-			</div>
-			<div class="list">
-				<div class="link">
-					<ion-icon name="folder-open-outline"></ion-icon>
-					<el-link
-						type="primary"
-						@click="
-							m_current_type = null;
-							updateTable();
-						"
-						>{{ m_file_types.road_name }}</el-link
-					>
-				</div>
-
-				<div
-					class="item"
-					v-for="item in m_file_types.types"
-					:key="item"
-				>
-					<div class="link">
-						<ion-icon name="document-outline"></ion-icon>
-						<el-link
-							type="primary"
-							@click="
-								m_current_type = item;
-								updateTable();
-							"
-							>{{ item }}</el-link
-						>
-					</div>
-				</div>
-			</div>
 		</el-aside>
+
 		<el-main>
 			<div class="title centered-vertical">
 				<ion-icon name="list-outline"></ion-icon>
-				<span
-					>{{ m_file_types.road_name }} -
-					{{
-						m_current_type == null ? "全部资料" : m_current_type
-					}}</span
-				>
+				<span>日常巡查列表</span>
 			</div>
 
 			<el-table
@@ -65,43 +26,39 @@
 				</el-table-column>
 				<el-table-column
 					prop="id"
-					label="序号"
+					label="巡查ID"
 					align="center"
 					width="100"
 				>
 				</el-table-column>
-				<el-table-column prop="name" label="名称" align="center">
+				<el-table-column prop="road_name" label="道路名称" align="center">
 				</el-table-column>
 				<el-table-column
-					prop="format"
-					label="格式"
+					prop="date"
+					label="巡查日期"
 					align="center"
 					width="100"
 				>
 				</el-table-column>
 				<el-table-column
-					prop="time"
-					label="时间"
+					prop="weather"
+					label="天气状况"
 					align="center"
 					width="200"
 				>
 				</el-table-column>
-				<el-table-column label="查看" align="center" width="60">
-					<ion-icon name="open-outline"></ion-icon>
-				</el-table-column>
-				<el-table-column label="下载" align="center" width="60">
-					<template slot-scope="scope">
-						<ion-icon
-							@click="download(scope.$index, scope.row)"
-							name="cloud-download-outline"
-						></ion-icon>
-					</template>
+				<el-table-column
+					prop="poeple"
+					label="检查人"
+					align="center"
+					width="200"
+				>
 				</el-table-column>
 			</el-table>
 
 			<el-pagination
 				:page-size="m_table_page_size"
-				:total="m_table_total"
+				:total="m_table.length"
 				background
 				:current-page.sync="m_current_page"
 				@current-change="updateTable()"
@@ -115,12 +72,18 @@
 						type="primary"
 						plain
 						size="medium"
-						@click="jump('doc-new')"
+						@click="jump('daily-inspection-add')"
 					>
 						新增
 					</el-button>
 					<el-button type="primary" plain size="medium">
+						查看
+					</el-button>
+					<el-button type="primary" plain size="medium">
 						删除
+					</el-button>
+					<el-button type="primary" plain size="medium">
+						返回
 					</el-button>
 				</div>
 			</div>
@@ -130,26 +93,21 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import axios, { AxiosResponse } from "axios";
 import { MyAxios } from "../typings/MyAxios";
-import { Road } from "../typings/Road";
+import { Inspection } from "../typings/Inspection";
 
 @Component
 export default class RoadInformation extends Vue {
 	private m_my_axios = new MyAxios();
 
-	// 侧边栏 文档类型选择
-	private m_file_types = {
-		road_name: "",
-		types: new Array<string>(),
-	};
-	private m_current_type: string | null = null;
 	// table
-	private m_table = new Array<File>();
+	private m_table = new Array<Inspection>();
 	private m_table_loading = true;
 	// 分页
 	private m_table_page_size = 0;
-	private m_table_total = 0;
+	// 按日期查询
+	private m_begin_date = "";
+	private m_end_date = "";
 	private m_current_page = 1;
 
 	constructor() {
@@ -161,19 +119,6 @@ export default class RoadInformation extends Vue {
 	}
 
 	mounted(): void {
-		this.m_my_axios.file_types_list((data) => {
-			this.m_file_types.types = data;
-		});
-
-		this.m_my_axios.road_info(
-			this.$route.query.road_id == "string"
-				? this.$route.query.road_id
-				: "",
-			(road: Road) => {
-				this.m_file_types.road_name = road.name;
-			}
-		);
-
 		this.updatePageSize();
 	}
 
@@ -188,18 +133,17 @@ export default class RoadInformation extends Vue {
 	public updateTable(): void {
 		this.m_table_loading = true;
 
-		this.m_table = new Array<File>(this.m_table_page_size);
 		let road_id =
 			typeof this.$route.query.road_id == "string"
 				? this.$route.query.road_id
 				: "";
-		let current_type =
-			typeof this.m_current_type == "string" ? this.m_current_type : "";
-		this.m_my_axios.file_info_list(
+		this.m_table = new Array<Inspection>(this.m_table_page_size);
+		this.m_my_axios.daily_inspection_info_list(
 			this.m_table_page_size,
 			this.m_current_page,
 			road_id,
-			current_type,
+			this.m_begin_date,
+            this.m_end_date,
 			(data) => {
 				for (let i = 0; i < data.length; i++) {
 					Vue.set(this.m_table, i, data[i]);
@@ -209,19 +153,6 @@ export default class RoadInformation extends Vue {
 
 		// setTimeout to debug
 		setTimeout(() => (this.m_table_loading = false), 300);
-	}
-
-	// eslint-disable-next-line
-	download(index: number, scope: any): void {
-		axios({
-			method: "get",
-			url: "/api/file_download",
-			data: {
-				file_id: scope.id,
-			},
-		}).then((response: AxiosResponse) => {
-			window.open(response.data.url, "_blank")?.location;
-		});
 	}
 
 	jump(target: string): void {
@@ -236,37 +167,12 @@ export default class RoadInformation extends Vue {
 <style scoped lang="scss">
 @import "themes/normal.scss";
 
-.doc-manage > .el-aside {
+.daily-inspection > .el-aside {
 	height: $gmain-height;
-	max-width: $gaside-width;
-	background-color: $aside-background-color;
-
-	.title {
-		height: 40px;
-		color: black;
-		border-bottom: $border-divider;
-
-		span {
-			margin-left: 4px;
-		}
-	}
-
-	.list {
-		margin-top: 4px;
-		margin-left: 20px;
-		.item {
-			margin-left: 20px;
-		}
-
-		.link {
-			height: 22px;
-			display: flex;
-			align-items: center;
-		}
-	}
+	max-width: 0px;
 }
 
-.doc-manage > .el-main {
+.daily-inspection > .el-main {
 	padding-top: 0;
 	padding-bottom: 0;
 	background-color: $gmain-background-color;
