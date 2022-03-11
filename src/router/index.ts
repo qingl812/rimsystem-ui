@@ -46,6 +46,32 @@ const routes: Array<RouteConfig> = [
 				meta: {
 					title: "数据信息 - 道路信息管理系统",
 				},
+				children: [
+					{
+						path: "main",
+						component: () =>
+							import("@/views/RoadInformation/Main.vue"),
+						meta: {
+							title: "主路 - 道路资料",
+						},
+					},
+					{
+						path: "branch",
+						component: () =>
+							import("@/views/RoadInformation/Branch.vue"),
+						meta: {
+							title: "支路 - 道路资料",
+						},
+					},
+					{
+						path: "basic-database",
+						component: () =>
+							import("@/views/RoadInformation/BasicDatabase.vue"),
+						meta: {
+							title: "基本资料库 - 道路资料",
+						},
+					},
+				],
 			},
 			{
 				path: "/daily-inspection",
@@ -66,6 +92,13 @@ const routes: Array<RouteConfig> = [
 				component: () => import("@/views/DocNew.vue"),
 				meta: {
 					title: "新增文档 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/road-detection",
+				component: () => import("@/views/RoadDetection.vue"),
+				meta: {
+					title: "道路检测 - 道路信息管理系统",
 				},
 			},
 			{

@@ -34,4 +34,6 @@ Mock.mock("/api/road_info", "get", test.road_info);
 
 // DailyInspection
 Mock.mock("/api/daily_inspection_info_list", "get", test.daily_inspection_info_list);
+Mock.mock("/api/branch_road_info", "get", test.branch_road_info);
+Mock.mock("/api/road_pavement_type", "get", test.road_pavement_type);
 export default Mock;

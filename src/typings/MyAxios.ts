@@ -69,6 +69,11 @@ export class MyAxios {
 		return this.get_string_array("/api/curb_types_name_list", callback);
 	}
 
+	// 路面铺装层类型
+	public road_pavement_type(callback: (data: Array<string>) => void): void {
+		return this.get_string_array("/api/road_pavement_type", callback);
+	}
+
 	// 获取道路信息
 	public road_info(id: string, callback: (data: Road) => void): void {
 		// eslint-disable-next-line prefer-const
@@ -219,6 +224,44 @@ export class MyAxios {
 			});
 
 			callback(files);
+		});
+	}
+
+	// 获取支路道路信息
+	public branch_road_info(
+		id: string,
+		callback: (data: BranchRoad) => void
+	): void {
+		// eslint-disable-next-line prefer-const
+		let road = new BranchRoad();
+		axios({
+			method: "get",
+			url: "/api/branch_road_info",
+			data: {
+				id: id,
+			},
+		}).then((response: AxiosResponse) => {
+			road.id = response.data.id;
+			road.name = response.data.name;
+			road.length = response.data.length;
+			road.begin_location = response.data.begin_location;
+			road.end_location = response.data.end_location;
+			road.begin_end = response.data.begin_end;
+			road.surface_type = response.data.surface_type;
+			road.sidewalk_tile_type = response.data.sidewalk_tile_type;
+			road.blind_road_tile_type = response.data.blind_road_tile_type;
+			road.curb_type = response.data.curb_type;
+			road.remark = response.data.remark;
+
+			road.road_pavement_type = response.data.road_pavement_type;
+			road.road_pavement_thickness =
+				response.data.road_pavement_thickness;
+			road.sidewalk_tile_thickness =
+				response.data.sidewalk_tile_thickness;
+			road.curb_type_2 = response.data.curb_type_2;
+			road.leveling_layer_thickness =
+				response.data.leveling_layer_thickness;
+			callback(road);
 		});
 	}
 }

@@ -200,4 +200,30 @@ export default {
 			},
 		];
 	},
+	branch_road_info: (params: AxiosRequestHeaders): unknown => {
+		const info = JSON.parse(params.body);
+		return {
+			name: "name " + info.id,
+			id: info.id,
+			length: "类型A",
+			begin_location: "道路养护等级 1",
+			end_location: "123",
+			begin_end: "1",
+			surface_type: "路面类型 A",
+			sidewalk_tile_type: "人行路面类型A",
+			blind_road_tile_type: "路缘石类型A",
+			curb_type: "路缘石类型A",
+			remark: "remark",
+
+			road_pavement_type: "road_pavement_type",
+			road_pavement_thickness: "road_pavement_thickness",
+			sidewalk_tile_thickness: "sidewalk_tile_thickness",
+			curb_type_2: "curb_type_2",
+			leveling_layer_thickness: "leveling_layer_thickness",
+		};
+	},
+	// 路面铺装层类型 road_pavement_type
+	road_pavement_type: (): unknown => {
+		return ["路面铺装层类型A", "路面铺装层类型B", "路面铺装层类型C", "路面铺装层类型D"];
+	},
 };

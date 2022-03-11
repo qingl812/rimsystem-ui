@@ -127,7 +127,7 @@ export default class Home extends Vue {
 	private m_map_center = { lng: 0, lat: 0 };
 	private m_map_zoom = 3;
 	// 选中的道路
-	private m_current_road_id: string | null = null;
+	private m_current_road_id = "";
 
 	constructor() {
 		super();
@@ -147,12 +147,9 @@ export default class Home extends Vue {
 			this.m_units = data;
 		});
 
-		let id = this.$route.query.road_id;
-		if (typeof id === "string") {
-			this.m_current_road_id = id;
-		} else {
-			this.m_current_road_id = null;
-		}
+		if (typeof this.$route.query.road_id == "string")
+			this.m_current_road_id = this.$route.query.road_id;
+		this.to_road(this.m_current_road_id);
 	}
 
 	public updatePageSize(): void {
@@ -179,8 +176,6 @@ export default class Home extends Vue {
 
 		// setTimeout to debug
 		setTimeout(() => (this.m_loading = false), 300);
-
-		this.to_road(null);
 	}
 
 	map_handler({ BMap, map }: never): void {
@@ -191,20 +186,21 @@ export default class Home extends Vue {
 		this.m_map_zoom = 15;
 	}
 
-	to_road(road_id: string | null): void {
+	to_road(road_id: string): void {
 		this.m_current_road_id = road_id;
 
-		if (typeof this.m_current_road_id === "string") {
+		if (this.m_current_road_id != "") {
 			// 去掉首尾的空格
 			let trim = this.m_current_road_id.trim();
-			this.m_current_road_id = trim.length == 0 ? null : trim;
-		}
+			this.m_current_road_id = trim.length == 0 ? "" : trim;
 
-		if (typeof this.m_current_road_id === "string") {
 			// 如果已经存在参数
-			if (typeof this.$route.query.road_id === "string") {
-				this.$route.query.road_id = this.m_current_road_id;
-			} else {
+			if (
+				!(
+					typeof this.$route.query.road_id == "string" &&
+					this.$route.query.road_id == this.m_current_road_id
+				)
+			) {
 				this.$router.replace({
 					query: {
 						...this.$route.query,
@@ -213,14 +209,13 @@ export default class Home extends Vue {
 				});
 			}
 		} else {
-			if (typeof this.$route.query.road_id === "string") {
+			if (typeof this.$route.query.road_id == "string")
 				this.$router.replace({ query: {} });
-			}
 		}
 
 		// 控制 status 的显示
 		let div_map = document.getElementById("bm-view") as HTMLElement;
-		if (typeof this.m_current_road_id === "string") {
+		if (this.m_current_road_id != "") {
 			div_map.style.height = "calc(100% - 40px)";
 		} else {
 			div_map.style.height = "100%";
