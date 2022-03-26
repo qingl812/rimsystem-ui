@@ -10,6 +10,7 @@ const routes: Array<RouteConfig> = [
 	},
 	{
 		path: "/login",
+		name: "login",
 		component: () => import("@/views/Login.vue"),
 		meta: {
 			title: "登陆 - 道路信息管理系统",
@@ -21,102 +22,97 @@ const routes: Array<RouteConfig> = [
 		children: [
 			{
 				path: "/home",
-				component: () => import("@/views/Home.vue"),
+				name: "home",
+				component: () => import("@/views/index/Home.vue"),
 				meta: {
 					title: "主页 - 道路信息管理系统",
 				},
 			},
 			{
+				path: "/visa-record",
+				name: "visa-record",
+				component: () => import("@/views/index/VisaRecord.vue"),
+				meta: {
+					title: "现场签证记录 - 道路信息管理系统",
+				},
+			},
+			{
 				path: "/road-information",
-				component: () => import("@/views/RoadInformation.vue"),
+				name: "road-information",
+				component: () => import("@/views/index/RoadInformation.vue"),
 				meta: {
 					title: "道路资料 - 道路信息管理系统",
 				},
 			},
 			{
-				path: "/doc-manage",
-				component: () => import("@/views/DocManage.vue"),
-				meta: {
-					title: "文档管理 - 道路信息管理系统",
-				},
-			},
-			{
-				path: "/data-information",
-				component: () => import("@/views/DataInformation.vue"),
-				meta: {
-					title: "数据信息 - 道路信息管理系统",
-				},
-				children: [
-					{
-						path: "main",
-						component: () =>
-							import("@/views/RoadInformation/Main.vue"),
-						meta: {
-							title: "主路 - 道路资料",
-						},
-					},
-					{
-						path: "branch",
-						component: () =>
-							import("@/views/RoadInformation/Branch.vue"),
-						meta: {
-							title: "支路 - 道路资料",
-						},
-					},
-					{
-						path: "basic-database",
-						component: () =>
-							import("@/views/RoadInformation/BasicDatabase.vue"),
-						meta: {
-							title: "基本资料库 - 道路资料",
-						},
-					},
-				],
-			},
-			{
-				path: "/daily-inspection",
-				component: () => import("@/views/DailyInspection.vue"),
-				meta: {
-					title: "日常巡查 - 道路信息管理系统",
-				},
-			},
-			{
-				path: "/daily-inspection-add",
-				component: () => import("@/views/DailyInspectionAdd.vue"),
-				meta: {
-					title: "编辑巡查信息 - 道路信息管理系统",
-				},
-			},
-			{
-				path: "/doc-new",
-				component: () => import("@/views/DocNew.vue"),
-				meta: {
-					title: "新增文档 - 道路信息管理系统",
-				},
-			},
-			{
 				path: "/road-detection",
-				component: () => import("@/views/RoadDetection.vue"),
+				name: "road-detection",
+				component: () => import("@/views/index/RoadDetection.vue"),
 				meta: {
 					title: "道路检测 - 道路信息管理系统",
 				},
 			},
 			{
-				path: "/test",
-				component: () => import("@/views/Test.vue"),
+				path: "/maintenance-management",
+				name: "maintenance-management",
+				component: () =>
+					import("@/views/index/MaintenanceManagement.vue"),
 				meta: {
-					title: "test - 道路信息管理系统",
+					title: "维修管理 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/money-management",
+				component: () => import("@/views/index/MoneyManagement.vue"),
+				children: [
+					{
+						path: "",
+						redirect: "month",
+					},
+					{
+						path: "month",
+						name: "money-management-monthly",
+						component: () =>
+							import("@/views/money/MonthManage.vue"),
+						meta: {
+							title: "资金月度管理 - 道路信息管理系统",
+						},
+					},
+					{
+						path: "year",
+						name: "money-management-yearly",
+						component: () => import("@/views/money/YearManage.vue"),
+						meta: {
+							title: "资金年度管理 - 道路信息管理系统",
+						},
+					},
+					{
+						path: "pay",
+						name: "money-management-pay",
+						component: () => import("@/views/money/PayManage.vue"),
+						meta: {
+							title: "资金支付管理 - 道路信息管理系统",
+						},
+					},
+				],
+			},
+			{
+				path: "/work-communication",
+				name: "work-communication",
+				component: () => import("@/views/index/WorkCommunication.vue"),
+				meta: {
+					title: "工作沟通 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/system-management",
+				name: "system-management",
+				component: () => import("@/views/index/SystemManagement.vue"),
+				meta: {
+					title: "系统管理 - 道路信息管理系统",
 				},
 			},
 		],
-	},
-	{
-		path: "*",
-		name: "NotFound",
-		component: () => import("@/views/NotFound.vue"),
-		meta: {
-			title: "404 - 道路信息管理系统",
-		},
 	},
 ];
 

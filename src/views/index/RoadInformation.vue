@@ -1,16 +1,17 @@
 <template>
-	<el-container class="road-detection">
+	<!-- 道路资料 -->
+	<el-container class="roadInformation">
 		<el-aside>
-			<div class="title centered">检测数据</div>
+			<div class="title centered">道路资料</div>
 			<div class="main">
 				<div>
 					<div class="text centered">
 						<ion-icon name="caret-down-circle-outline"></ion-icon>
-						<span>日常巡查</span>
+						<span>道路信息</span>
 					</div>
 					<div class="text centered">
 						<ion-icon name="caret-down-circle-outline"></ion-icon>
-						<span>巡查汇总</span>
+						<span>文档资料</span>
 					</div>
 				</div>
 			</div>
@@ -18,7 +19,7 @@
 		<el-main>
 			<div class="title centered-vertical">
 				<ion-icon name="list-outline"></ion-icon>
-				<span>道路列表</span>
+				<span>道路信息列表</span>
 			</div>
 
 			<el-row :gutter="20" class="search">
@@ -123,10 +124,13 @@
 			<div class="option">
 				<div class="centered">
 					<el-button type="primary" plain size="medium">
-						查看巡查记录
+						新增
 					</el-button>
 					<el-button type="primary" plain size="medium">
-						巡查汇总
+						查看
+					</el-button>
+					<el-button type="primary" plain size="medium">
+						删除
 					</el-button>
 				</div>
 			</div>
@@ -136,7 +140,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import axios, { AxiosResponse } from "axios";
+import { MyAxios } from "@/typings/MyAxios";
+import { Road } from "@/typings/Road";
 
 @Component
 export default class RoadInformation extends Vue {
@@ -147,7 +152,7 @@ export default class RoadInformation extends Vue {
 	private m_road_types = new Array<string>();
 	private m_road_mlevels = new Array<string>();
 	// table
-	private m_table = new Array<unknown>();
+	private m_table = new Array<Road>();
 	private m_table_loading = true;
 	// 分页
 	private m_table_page_size = 0;
@@ -163,22 +168,11 @@ export default class RoadInformation extends Vue {
 	}
 
 	mounted(): void {
-		axios({
-			method: "get",
-			url: "/api/types_name_list",
-		}).then((response: AxiosResponse) => {
-			response.data.types.forEach((element: string) => {
-				this.m_road_types.push(element);
-			});
+		MyAxios.get_road_type_name_list((data) => {
+			this.m_road_types = data;
 		});
-
-		axios({
-			method: "get",
-			url: "/api/mlevels_name_list",
-		}).then((response: AxiosResponse) => {
-			response.data.mlevels.forEach((element: string) => {
-				this.m_road_mlevels.push(element);
-			});
+		MyAxios.get_road_maintenance_level_list((data) => {
+			this.m_road_mlevels = data;
 		});
 
 		this.updateTable();
@@ -195,23 +189,16 @@ export default class RoadInformation extends Vue {
 	public updateTable(): void {
 		this.m_table_loading = true;
 
-		this.m_table = new Array<string>(this.m_table_page_size);
-		axios({
-			method: "get",
-			url: "/api/road_info_list",
-			data: {
-				page_size: this.m_table_page_size,
-				page: this.m_current_page,
-				name: this.m_search_name,
-				type: this.m_search_type,
-				mlevel: this.m_search_mlevel,
-			},
-		}).then((response: AxiosResponse) => {
-			this.m_table_total = response.data.total;
-			for (let i = 0; i < response.data.roads.length; i++) {
-				Vue.set(this.m_table, i, response.data.roads[i]);
+		MyAxios.get_road_info_search(
+			this.m_table_page_size,
+			this.m_current_page,
+			this.m_search_name,
+			this.m_search_type,
+			this.m_search_mlevel,
+			(data) => {
+				this.m_table = data;
 			}
-		});
+		);
 
 		// setTimeout to debug
 		setTimeout(() => (this.m_table_loading = false), 300);
@@ -220,8 +207,8 @@ export default class RoadInformation extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "themes/normal.scss";
-.road-detection > .el-aside {
+@import "@/themes/normal.scss";
+.roadInformation > .el-aside {
 	height: $gmain-height;
 	max-width: $gaside-width;
 	background-color: $aside-background-color;
@@ -250,7 +237,7 @@ export default class RoadInformation extends Vue {
 	}
 }
 
-.road-detection > .el-main {
+.roadInformation > .el-main {
 	padding-top: 0;
 	padding-bottom: 0;
 	background-color: $gmain-background-color;

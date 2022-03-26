@@ -1,13 +1,24 @@
 # rimsystem-ui
 
-## build
+## Project setup
+```
+yarn install
+```
 
-- 下载依赖 `npm install`
-- 热启动开发环境 `npm run serve`
-- api docs serve `npm run docs` 
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
 
-## 注意事项
+### Compiles and minifies for production
+```
+yarn build
+```
 
-- 如果 `npm install` 失败，请尝试更换为淘宝镜像（设置代理下载可能还是失败）
+### Lints and fixes files
+```
+yarn lint
+```
 
-
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

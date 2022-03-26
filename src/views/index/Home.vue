@@ -5,7 +5,7 @@
 				<span class="centered">筛选条件</span>
 				<el-divider></el-divider>
 			</div>
-			<el-select
+			<!-- <el-select
 				v-model="m_valueArea"
 				clearable
 				placeholder="所属区属"
@@ -18,7 +18,7 @@
 					:value="item"
 				>
 				</el-option>
-			</el-select>
+			</el-select> -->
 			<el-select
 				v-model="m_valueUnit"
 				clearable
@@ -65,7 +65,7 @@
 				<el-pagination
 					layout="prev,jumper, next"
 					:page-size="m_page_size"
-					:total="m_road_list.length"
+					:total="m_page_total"
 					background
 					small
 					:current-page.sync="m_current_page"
@@ -102,24 +102,23 @@
 </template>
 
 <script lang="ts">
-import { Road } from "../typings/Road";
+import { Road } from "@/typings/Road";
 import { Component, Vue } from "vue-property-decorator";
-import GlobalScss from "../../themes/normal.scss";
-import { MyAxios } from "../typings/MyAxios";
+import GlobalScss from "@/themes/normal.scss";
+import { MyAxios } from "@/typings/MyAxios";
 
 @Component
 export default class Home extends Vue {
-	private m_my_axios = new MyAxios();
-
 	// 筛选道路
 	private m_valueArea = "";
 	private m_valueUnit = "";
 	private m_valueSearch = "";
 	// 筛选道路的选项
-	private m_areas = new Array<string>();
+	// private m_areas = new Array<string>();
 	private m_units = new Array<string>();
 	// 道路
 	private m_road_list = new Array<Road>();
+	private m_page_total = 0;
 	private m_page_size = 0; // 每页显示的道路数量
 	private m_current_page = 1;
 	private m_loading = true; //正在从服务器获取 road 列表
@@ -140,10 +139,10 @@ export default class Home extends Vue {
 	mounted(): void {
 		this.updatePageSize();
 
-		this.m_my_axios.area_name_list((data) => {
-			this.m_areas = data;
-		});
-		this.m_my_axios.unit_name_list((data) => {
+		// MyAxios.get_area_name_list((data) => {
+		// 	this.m_areas = data;
+		// });
+		MyAxios.get_unit_name_list((data) => {
 			this.m_units = data;
 		});
 
@@ -163,13 +162,13 @@ export default class Home extends Vue {
 	public updateRoadList(): void {
 		this.m_loading = true;
 
-		this.m_my_axios.road_name_list(
+		MyAxios.get_road_name_search(
 			this.m_page_size,
 			this.m_current_page,
 			this.m_valueSearch,
-			this.m_valueArea,
 			this.m_valueUnit,
-			(data) => {
+			(total, data) => {
+				this.m_page_total = total;
 				this.m_road_list = data;
 			}
 		);
@@ -242,7 +241,7 @@ export default class Home extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "themes/normal.scss";
+@import "@/themes/normal.scss";
 
 .el-divider {
 	margin: 0;
