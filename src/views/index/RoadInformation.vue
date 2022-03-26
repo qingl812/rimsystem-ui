@@ -102,7 +102,7 @@
 				<el-table-column prop="type" label="道路类型" align="center">
 				</el-table-column>
 				<el-table-column
-					prop="mlevel"
+					prop="maintenance_level"
 					label="道路养护等级"
 					align="center"
 				>
@@ -175,7 +175,7 @@ export default class RoadInformation extends Vue {
 			this.m_road_mlevels = data;
 		});
 
-		this.updateTable();
+		this.updatePageSize();
 	}
 
 	public updatePageSize(): void {
@@ -195,7 +195,8 @@ export default class RoadInformation extends Vue {
 			this.m_search_name,
 			this.m_search_type,
 			this.m_search_mlevel,
-			(data) => {
+			(total, data) => {
+				this.m_table_total = total;
 				this.m_table = data;
 			}
 		);

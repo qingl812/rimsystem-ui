@@ -54,12 +54,43 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: "/maintenance-management",
-				name: "maintenance-management",
 				component: () =>
 					import("@/views/index/MaintenanceManagement.vue"),
-				meta: {
-					title: "维修管理 - 道路信息管理系统",
-				},
+				children: [
+					{
+						path: "",
+						redirect: "plan",
+					},
+					{
+						path: "plan",
+						name: "maintenance-management-plan",
+						component: () =>
+							import("@/views/maintenance/MaintenancePlan.vue"),
+						meta: {
+							title: "维修计划 - 维修管理 - 道路信息管理系统",
+						},
+					},
+					{
+						path: "achieve",
+						name: "maintenance-management-achieve",
+						component: () =>
+							import("@/views/maintenance/AchieveBatch.vue"),
+						meta: {
+							title: "实现呈批 - 维修管理 - 道路信息管理系统",
+						},
+					},
+					{
+						path: "field",
+						name: "maintenance-management-field",
+						component: () =>
+							import(
+								"@/views/maintenance/FieldImplementationRecords.vue"
+							),
+						meta: {
+							title: "现场实施记录 - 维修管理 - 道路信息管理系统",
+						},
+					},
+				],
 			},
 			{
 				path: "/money-management",
@@ -75,7 +106,7 @@ const routes: Array<RouteConfig> = [
 						component: () =>
 							import("@/views/money/MonthManage.vue"),
 						meta: {
-							title: "资金月度管理 - 道路信息管理系统",
+							title: "资金月度管理 - 资金管理 - 道路信息管理系统",
 						},
 					},
 					{
@@ -83,7 +114,7 @@ const routes: Array<RouteConfig> = [
 						name: "money-management-yearly",
 						component: () => import("@/views/money/YearManage.vue"),
 						meta: {
-							title: "资金年度管理 - 道路信息管理系统",
+							title: "资金年度管理 - 资金管理 - 道路信息管理系统",
 						},
 					},
 					{
@@ -91,7 +122,7 @@ const routes: Array<RouteConfig> = [
 						name: "money-management-pay",
 						component: () => import("@/views/money/PayManage.vue"),
 						meta: {
-							title: "资金支付管理 - 道路信息管理系统",
+							title: "资金支付管理 - 资金管理 - 道路信息管理系统",
 						},
 					},
 				],

@@ -132,24 +132,15 @@ export class MyAxios {
 		callback: (data: Array<string>) => void
 	): void {
 		axios({
-			method: "get",
-			url: "/api",
+			method: "post",
+			url: "/roadType/searchType",
 		}).then((response: AxiosResponse) => {
-			// eslint-disable-next-line prefer-const
 			let ret = Array<string>();
-			// response.data.forEach((element: string) => {
-			// 	ret.push(element);
-			// });
+			response.data.forEach((element: any) => {
+				ret.push(element.name);
+			});
 			callback(ret);
 		});
-
-		// eslint-disable-next-line prefer-const
-		let ret = Array<string>();
-		ret.push("a");
-		ret.push("b");
-		ret.push("c");
-		ret.push("d");
-		callback(ret);
 	}
 
 	// 道路名字的列表
@@ -191,37 +182,35 @@ export class MyAxios {
 		name: string, // 搜索的名字
 		type: string, // 搜索的道路类型
 		mlevel: string, // 搜索的道路养护等级
-		callback: (data: Array<Road>) => void
+		callback: (total: number, data: Array<Road>) => void
 	): void {
 		axios({
-			method: "get",
-			url: "/api",
+			method: "post",
+			url: "/api/road_info_list",
 			data: {
-				page_size: page_size,
-				page: page,
-				name: name,
-				type: type,
-				mlevel: mlevel,
+				pageSize: page_size,
+				currentPage: page,
+				roadName: name,
+				roadType: type,
+				roadMaintenance: mlevel,
 			},
 		}).then((response: AxiosResponse) => {
-			// response.data.forEach((element: Road) => {
-			// 	// eslint-disable-next-line prefer-const
-			// 	let t = new Road();
-			// 	t.id = element.id;
-			// 	t.name = element.name;
-			// 	road.push(t);
-			// });
-			// eslint-disable-next-line prefer-const
-			let road = new Array<Road>();
-			callback(road);
+			if (response.status == 200) {
+				console.log(response.data);
+				let road = new Array<Road>();
+				response.data.pageData.forEach((element: any) => {
+					// eslint-disable-next-line prefer-const
+					let t = new Road();
+					t.id = element.id;
+					t.maintenance_level = element.roadMaintenanceGrade;
+					t.name = element.roadName;
+					t.type = element.roadType;
+					t.unit = element.user.organizationName;
+					road.push(t);
+				});
+				callback(response.data.totalCount, road);
+			}
 		});
-
-		let ret = Array<Road>();
-		let r = new Road();
-		r.id = "1";
-		r.name = "road";
-		ret.push(r);
-		callback(ret);
 	}
 
 	// 月度资金申请
@@ -245,8 +234,8 @@ export class MyAxios {
 					let t = new Fund();
 					t.id = element.id;
 					let date = new Date(element.planTime); //获取一个时间对象
-					t.plan_time = date.getFullYear() + "年" + date.getMonth() + "月";
-					t.total_price = element.totalPrice+"元";
+					t.date = date.getFullYear() + "年" + date.getMonth() + "月";
+					t.total_price = element.totalPrice + "元";
 					t.is_act = element.isAct;
 					t.is_finish = element.isFinish;
 					ret.push(t);
@@ -254,11 +243,92 @@ export class MyAxios {
 				callback(response.data.data.pageBean.totalCount, ret);
 			}
 		});
+	}
 
-		// eslint-disable-next-line prefer-const
-		// let ret = Array<Fund>();
-		// ret.push(new Fund());
-		// ret[0].id = "123";
-		// callback(10, ret);
+	// 资金月度申请 道路维修计划表
+	public static get_fund_payment_management(
+		year_id: string, // 年份
+		page_size: number, // 每页有几个
+		page: number, // 第几页
+		callback: (total: number, data: Array<Fund>) => void
+	): void {
+		axios({
+			method: "post",
+			url: "/searchMonthFundOfYear",
+			data: {
+				yearId: year_id,
+				pageSize: page_size,
+				currentPage: page,
+			},
+		}).then((response: AxiosResponse) => {
+			if (response.data.code == 200) {
+				// eslint-disable-next-line prefer-const
+				let ret = Array<Fund>();
+				response.data.data.pageBean.pageData.forEach((element: any) => {
+					let t = new Fund();
+					t.id = element.id;
+					let date = new Date(element.planTime); //获取一个时间对象
+					t.date = date.getFullYear() + "年" + date.getMonth() + "月";
+					t.total_price = element.totalPrice + "元";
+					t.is_act = element.isAct;
+					t.is_finish = element.isFinish;
+					ret.push(t);
+				});
+				callback(response.data.data.pageBean.totalCount, ret);
+			}
+		});
+	}
+
+	// 项目实施呈现表
+	public static get_project_implementation_presentation_table(
+		date: Date, // 日期
+		page_size: number, // 每页有几个
+		page: number, // 第几页
+		callback: (total: number, data: Array<Fund>) => void
+	): void {
+		// 日期格式转换
+		let dateStr = date.getFullYear() + "/";
+		let t = (date.getMonth() + 1).toString();
+		if (t.length == 1) t = "0" + t;
+		dateStr += t;
+
+		axios({
+			method: "post",
+			url: "/searchMonthFundOfYear",
+			data: {
+				createTableTime: dateStr,
+				pageSize: page_size,
+				currentPage: page,
+			},
+		}).then((response: AxiosResponse) => {
+			if (response.data.code == 200) {
+				console.log(response.data.data.pageInfo);
+				// eslint-disable-next-line prefer-const
+				let ret = Array<Fund>();
+				response.data.data.pageInfo.list.forEach((element: any) => {
+					let t = new Fund();
+					t.id = element.id;
+					t.name = element.fundName;
+					t.type = "null";
+					let date = new Date(element.fundTime); //获取一个时间对象
+					t.date =
+						date.getFullYear() +
+						"/" +
+						(date.getMonth() + 1) +
+						"/" +
+						date.getDay() +
+						" " +
+						date.getHours() +
+						":" +
+						date.getMinutes() +
+						":" +
+						date.getSeconds();
+					t.is_act = "null";
+					t.is_finish = "null";
+					ret.push(t);
+				});
+				callback(response.data.data.pageInfo.total, ret);
+			}
+		});
 	}
 }

@@ -23,13 +23,21 @@
 			</el-table-column>
 			<el-table-column prop="id" label="编号" align="center" width="100">
 			</el-table-column>
-			<el-table-column prop="name" label="道路名称" align="center">
+			<el-table-column prop="date" label="维修年月" align="center">
 			</el-table-column>
-			<el-table-column prop="type" label="道路类型" align="center">
+			<el-table-column prop="total_price" label="维修总价" align="center">
 			</el-table-column>
-			<el-table-column prop="mlevel" label="道路养护等级" align="center">
+			<el-table-column
+				prop="is_act"
+				label="现场实施是否执行"
+				align="center"
+			>
 			</el-table-column>
-			<el-table-column prop="unit" label="管理单位" align="center">
+			<el-table-column
+				prop="is_finish"
+				label="现场实施是否完成"
+				align="center"
+			>
 			</el-table-column>
 		</el-table>
 
@@ -45,9 +53,7 @@
 
 		<div class="option">
 			<div class="centered">
-				<el-button type="primary" plain size="medium"> 新增 </el-button>
 				<el-button type="primary" plain size="medium"> 查看 </el-button>
-				<el-button type="primary" plain size="medium"> 删除 </el-button>
 			</div>
 		</div>
 	</div>
@@ -97,9 +103,6 @@ export default class MonthManage extends Vue {
 			(total, data) => {
 				this.m_table_total = total;
 				this.m_table = data;
-
-				console.log(data);
-				console.log()
 			}
 		);
 

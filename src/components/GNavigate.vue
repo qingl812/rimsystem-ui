@@ -27,40 +27,43 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class GNavigate extends Vue {
 	private m_active = "1";
+	private m_nav = new Map([
+		["1", "home"],
+		["2", "visa-record"],
+		["3", "road-information"],
+		["4", "road-detection"],
+		["5", "maintenance-management"],
+		["6", "money-management"],
+		["7", "work-communication"],
+		["8", "system-management"],
+		["9", "logout"],
+	]);
+
+	mounted(): void {
+		// 获取一级路由
+		let t = this.$router.currentRoute.path;
+		let p = t.indexOf("/");
+		t = t.substr(p + 1);
+		p = t.indexOf("/");
+		if (p != -1) t = t.substr(0, p);
+
+		// 判断一级路由
+		this.m_nav.forEach((value, key) => {
+			if (value == t) {
+				this.m_active = key;
+			}
+		});
+	}
 
 	jump(id: number): void {
 		this.m_active = id.toString();
-		let target = "";
-		switch (id) {
-			case 1:
-				target = "home";
-				break;
-			case 2:
-				target = "visa-record";
-				break;
-			case 3:
-				target = "road-information";
-				break;
-			case 4:
-				target = "road-detection";
-				break;
-			case 5:
-				target = "maintenance-management";
-				break;
-			case 6:
-				target = "money-management";
-				break;
-			case 7:
-				target = "work-communication";
-				break;
-			case 8:
-				target = "system-management";
-				break;
-			case 9:
-				localStorage.removeItem("authentication");
-				target = "login";
-				break;
+		let target = this.m_nav.get(this.m_active);
+
+		if (target == "logout") {
+			localStorage.removeItem("authentication");
+			target = "login";
 		}
+
 		this.$router.push({ path: "/" + target });
 	}
 }

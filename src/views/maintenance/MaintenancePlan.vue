@@ -1,9 +1,9 @@
 <template>
-	<!-- 资金支付管理 -->
-	<div id="PayManage">
+	<!-- 维修计划 -->
+	<div id="MaintenancePlan">
 		<div class="title centered-vertical">
 			<ion-icon name="list-outline"></ion-icon>
-			<span>资金支付管理</span>
+			<span>道路维修计划表</span>
 		</div>
 
 		<el-table
@@ -14,36 +14,30 @@
 			highlight-current-row
 			v-loading="m_table_loading"
 		>
-			<el-table-column prop="id" label="序号" align="center" width="100">
-			</el-table-column>
-			<el-table-column prop="date" label="年份" align="center">
-			</el-table-column>
 			<el-table-column
-				prop="total_price"
-				label="总预算（元）"
+				prop="check"
+				type="selection"
 				align="center"
+				width="60"
 			>
 			</el-table-column>
-			<el-table-column prop="is_act" label="已拨付金额" align="center">
+			<el-table-column prop="id" label="编号" align="center" width="100">
+			</el-table-column>
+			<el-table-column prop="date" label="维修年月" align="center">
+			</el-table-column>
+			<el-table-column prop="total_price" label="维修总价" align="center">
+			</el-table-column>
+			<el-table-column
+				prop="is_act"
+				label="现场实施是否执行"
+				align="center"
+			>
 			</el-table-column>
 			<el-table-column
 				prop="is_finish"
-				label="呈批待拨付金额"
+				label="现场实施是否完成"
 				align="center"
 			>
-			</el-table-column>
-			<el-table-column prop="is_finish" label="预算金额" align="center">
-			</el-table-column>
-			<el-table-column label="操作" width="200" align="center">
-				<!-- slot-scope="scope" -->
-				<template>
-					<el-button type="primary" plain size="mini">
-						支付查看
-					</el-button>
-					<el-button type="primary" plain size="mini">
-						支付管理
-					</el-button>
-				</template>
 			</el-table-column>
 		</el-table>
 
@@ -59,10 +53,8 @@
 
 		<div class="option">
 			<div class="centered">
-				<el-button type="primary" plain size="medium">
-					资金预算管理
-				</el-button>
-				<el-button type="primary" plain size="medium"> 导出 </el-button>
+				<el-button type="primary" plain size="medium"> 查看 </el-button>
+				<el-button type="primary" plain size="medium"> 呈批表 </el-button>
 			</div>
 		</div>
 	</div>
@@ -70,11 +62,11 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { Fund } from "@/typings/Fund";
 import { MyAxios } from "@/typings/MyAxios";
+import { Fund } from "@/typings/Fund";
 
 @Component
-export default class PayManage extends Vue {
+export default class MaintenancePlan extends Vue {
 	// table
 	private m_table = new Array<Fund>();
 	private m_table_loading = true;
@@ -106,8 +98,7 @@ export default class PayManage extends Vue {
 	public updateTable(): void {
 		this.m_table_loading = true;
 
-		MyAxios.get_fund_payment_management(
-			"13",
+		MyAxios.get_monthly_funding_request(
 			this.m_table_page_size,
 			this.m_current_page,
 			(total, data) => {
@@ -125,7 +116,7 @@ export default class PayManage extends Vue {
 <style scoped lang="scss">
 @import "@/themes/normal.scss";
 
-#PayManage {
+#MaintenancePlan {
 	height: 100%;
 }
 

@@ -2,7 +2,7 @@
 	<!-- 资金管理 -->
 	<el-container id="MoneyManagement">
 		<el-aside>
-			<SideBar title="" :options="m_options"></SideBar>
+			<SideBar :title="m_title" :options="m_options"></SideBar>
 		</el-aside>
 		<el-main>
 			<router-view></router-view>

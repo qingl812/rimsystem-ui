@@ -12,4 +12,5 @@ export class Road {
 	public sidewalk_tile_type = "";
 	public blind_road_tile_type = "";
 	public curb_type = "";
+	public unit = "";
 }

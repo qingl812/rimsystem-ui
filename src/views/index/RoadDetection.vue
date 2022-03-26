@@ -172,7 +172,7 @@ export default class RoadDetection extends Vue {
 			this.m_road_mlevels = data;
 		});
 
-		this.updateTable();
+		this.updatePageSize();
 	}
 
 	public updatePageSize(): void {
@@ -192,7 +192,8 @@ export default class RoadDetection extends Vue {
 			this.m_search_name,
 			this.m_search_type,
 			this.m_search_mlevel,
-			(data) => {
+			(total, data) => {
+				this.m_table_total = total;
 				this.m_table = data;
 			}
 		);

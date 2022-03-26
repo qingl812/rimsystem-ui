@@ -1,10 +1,30 @@
 <template>
-	<!-- 资金支付管理 -->
-	<div id="PayManage">
+	<!-- 实现呈批 -->
+	<div id="AchieveBatch">
 		<div class="title centered-vertical">
 			<ion-icon name="list-outline"></ion-icon>
-			<span>资金支付管理</span>
+			<span>项目实施呈现表</span>
 		</div>
+
+		<el-row :gutter="20" class="search">
+			<el-col :span="4" class="centered-vertical">
+				<el-date-picker
+					v-model="m_date"
+					type="date"
+					placeholder="选择日期"
+				>
+				</el-date-picker>
+			</el-col>
+			<el-col :span="1.6" class="centered-vertical">
+				<el-button
+					type="primary"
+					icon="el-icon-search"
+					@click="updateTable()"
+				>
+					查询
+				</el-button>
+			</el-col>
+		</el-row>
 
 		<el-table
 			class="m-table"
@@ -14,36 +34,32 @@
 			highlight-current-row
 			v-loading="m_table_loading"
 		>
-			<el-table-column prop="id" label="序号" align="center" width="100">
-			</el-table-column>
-			<el-table-column prop="date" label="年份" align="center">
-			</el-table-column>
 			<el-table-column
-				prop="total_price"
-				label="总预算（元）"
+				prop="check"
+				type="selection"
 				align="center"
+				width="60"
 			>
 			</el-table-column>
-			<el-table-column prop="is_act" label="已拨付金额" align="center">
+			<el-table-column prop="id" label="编号" align="center" width="100">
+			</el-table-column>
+			<el-table-column prop="name" label="项目名称" align="center">
+			</el-table-column>
+			<el-table-column prop="type" label="项目类型" align="center">
+			</el-table-column>
+			<el-table-column prop="date" label="录入日期" align="center">
+			</el-table-column>
+			<el-table-column
+				prop="is_act"
+				label="现场实施是否执行"
+				align="center"
+			>
 			</el-table-column>
 			<el-table-column
 				prop="is_finish"
-				label="呈批待拨付金额"
+				label="现场实施是否完成"
 				align="center"
 			>
-			</el-table-column>
-			<el-table-column prop="is_finish" label="预算金额" align="center">
-			</el-table-column>
-			<el-table-column label="操作" width="200" align="center">
-				<!-- slot-scope="scope" -->
-				<template>
-					<el-button type="primary" plain size="mini">
-						支付查看
-					</el-button>
-					<el-button type="primary" plain size="mini">
-						支付管理
-					</el-button>
-				</template>
 			</el-table-column>
 		</el-table>
 
@@ -59,10 +75,8 @@
 
 		<div class="option">
 			<div class="centered">
-				<el-button type="primary" plain size="medium">
-					资金预算管理
-				</el-button>
-				<el-button type="primary" plain size="medium"> 导出 </el-button>
+				<el-button type="primary" plain size="medium"> 查看 </el-button>
+				<el-button type="primary" plain size="medium"> 删除 </el-button>
 			</div>
 		</div>
 	</div>
@@ -70,11 +84,11 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { Fund } from "@/typings/Fund";
 import { MyAxios } from "@/typings/MyAxios";
+import { Fund } from "@/typings/Fund";
 
 @Component
-export default class PayManage extends Vue {
+export default class AchieveBatch extends Vue {
 	// table
 	private m_table = new Array<Fund>();
 	private m_table_loading = true;
@@ -82,6 +96,8 @@ export default class PayManage extends Vue {
 	private m_table_page_size = 0;
 	private m_table_total = 0;
 	private m_current_page = 1;
+	// search
+	private m_date = new Date();
 
 	constructor() {
 		super();
@@ -106,8 +122,8 @@ export default class PayManage extends Vue {
 	public updateTable(): void {
 		this.m_table_loading = true;
 
-		MyAxios.get_fund_payment_management(
-			"13",
+		MyAxios.get_project_implementation_presentation_table(
+			this.m_date,
 			this.m_table_page_size,
 			this.m_current_page,
 			(total, data) => {
@@ -125,7 +141,7 @@ export default class PayManage extends Vue {
 <style scoped lang="scss">
 @import "@/themes/normal.scss";
 
-#PayManage {
+#AchieveBatch {
 	height: 100%;
 }
 
