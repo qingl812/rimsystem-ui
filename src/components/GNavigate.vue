@@ -64,7 +64,11 @@ export default class GNavigate extends Vue {
 			target = "login";
 		}
 
-		this.$router.push({ path: "/" + target });
+		// 获取一级路由
+		let t = this.$router.currentRoute.path;
+		let p = t.indexOf("/");
+		t = t.substr(p + 1);
+		if (t != target) this.$router.push({ path: "/" + target });
 	}
 }
 </script>

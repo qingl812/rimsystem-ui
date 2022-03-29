@@ -28,6 +28,40 @@ const routes: Array<RouteConfig> = [
 					title: "主页 - 道路信息管理系统",
 				},
 			},
+			// home
+			{
+				path: "/home/doc-manage",
+				name: "home-docmanage",
+				component: () => import("@/views/home/DocManage.vue"),
+				meta: {
+					title: "文档管理 - 主页 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/home/data-information",
+				name: "home-datainformation",
+				component: () => import("@/views/home/DataInformation.vue"),
+				meta: {
+					title: "数据信息 - 主页 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/home/data-deletion",
+				name: "home-datadeletion",
+				component: () => import("@/views/home/DataDeletion.vue"),
+				meta: {
+					title: "数据删除 - 主页 - 道路信息管理系统",
+				},
+			},
+			{
+				path: "/home/daily-inspection",
+				name: "home-dailyinspection",
+				component: () => import("@/views/home/DailyInspection.vue"),
+				meta: {
+					title: "数据删除 - 主页 - 道路信息管理系统",
+				},
+			},
+			// ! home
 			{
 				path: "/visa-record",
 				name: "visa-record",
@@ -63,7 +97,7 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: "plan",
-						name: "maintenance-management-plan",
+						name: "maintenance-managementplan",
 						component: () =>
 							import("@/views/maintenance/MaintenancePlan.vue"),
 						meta: {
@@ -72,7 +106,7 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: "achieve",
-						name: "maintenance-management-achieve",
+						name: "maintenance-managementachieve",
 						component: () =>
 							import("@/views/maintenance/AchieveBatch.vue"),
 						meta: {
@@ -81,7 +115,7 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: "field",
-						name: "maintenance-management-field",
+						name: "maintenance-managementfield",
 						component: () =>
 							import(
 								"@/views/maintenance/FieldImplementationRecords.vue"
@@ -102,7 +136,7 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: "month",
-						name: "money-management-monthly",
+						name: "moneymanagement-monthly",
 						component: () =>
 							import("@/views/money/MonthManage.vue"),
 						meta: {
@@ -111,7 +145,7 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: "year",
-						name: "money-management-yearly",
+						name: "moneymanagement-yearly",
 						component: () => import("@/views/money/YearManage.vue"),
 						meta: {
 							title: "资金年度管理 - 资金管理 - 道路信息管理系统",
@@ -119,7 +153,7 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: "pay",
-						name: "money-management-pay",
+						name: "moneymanagement-pay",
 						component: () => import("@/views/money/PayManage.vue"),
 						meta: {
 							title: "资金支付管理 - 资金管理 - 道路信息管理系统",
@@ -129,15 +163,34 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: "/work-communication",
-				name: "work-communication",
 				component: () => import("@/views/index/WorkCommunication.vue"),
-				meta: {
-					title: "工作沟通 - 道路信息管理系统",
-				},
+				children: [
+					{
+						path: "",
+						redirect: "street",
+					},
+					{
+						path: "street",
+						name: "workcommunication-street",
+						component: () => import("@/views/work/StreetWork.vue"),
+						meta: {
+							title: "街道 - 工作沟通 - 道路信息管理系统",
+						},
+					},
+					{
+						path: "authority",
+						name: "workcommunication-authority",
+						component: () =>
+							import("@/views/work/AuthorityWork.vue"),
+						meta: {
+							title: "管理局 - 工作沟通 - 道路信息管理系统",
+						},
+					},
+				],
 			},
 			{
 				path: "/system-management",
-				name: "system-management",
+				name: "systemmanagement",
 				component: () => import("@/views/index/SystemManagement.vue"),
 				meta: {
 					title: "系统管理 - 道路信息管理系统",

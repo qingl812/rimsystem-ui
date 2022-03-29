@@ -32,18 +32,4 @@ export default class MoneyManagement extends Vue {
 
 <style scoped lang="scss">
 @import "@/themes/normal.scss";
-
-#MoneyManagement {
-	.el-aside {
-		height: $gmain-height;
-		max-width: $gaside-width;
-		background-color: $aside-background-color;
-	}
-
-	.el-main {
-		padding-top: 0;
-		padding-bottom: 0;
-		background-color: $gmain-background-color;
-	}
-}
 </style>

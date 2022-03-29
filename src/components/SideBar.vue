@@ -2,7 +2,7 @@
 	<div class="SideBar">
 		<div class="title centered">{{ title }}</div>
 		<div class="main">
-			<div :v-model="options" v-for="o in options" :key="o.url">
+			<div :v-model="options" v-for="o in options" :key="o.name">
 				<div class="text centered" @click="jump(o.url)">
 					<ion-icon name="caret-down-circle-outline"></ion-icon>
 					<span>{{ o.name }}</span>
@@ -17,12 +17,14 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 
 @Component
 export default class SideBar extends Vue {
-	@Prop({ required: true, default: "" }) readonly title: string | undefined;
+	@Prop({ required: true }) readonly title: string | undefined;
 	@Prop({ required: true }) readonly options:
 		| Array<{ name: string; url: string }>
 		| undefined;
 
 	jump(url: string): void {
+		if (url == "") return;
+		
 		let path = this.$router.currentRoute.path;
 		path = path.substr(path.lastIndexOf("/") + 1);
 		if (path != url)

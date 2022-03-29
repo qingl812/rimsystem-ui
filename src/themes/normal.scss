@@ -53,3 +53,16 @@ $active-link-color: #e6a23c;
 	link_color: $link-color;
 	active_link_color: $active-link-color;
 }
+
+// 经典左右布局
+.el-aside {
+	height: $gmain-height;
+	max-width: $gaside-width;
+	background-color: $aside-background-color;
+}
+
+.el-main {
+	padding-top: 0;
+	padding-bottom: 0;
+	background-color: $gmain-background-color;
+}

@@ -90,7 +90,7 @@
 				<el-button type="primary" @click="jump('data-information')"
 					>数据信息</el-button
 				>
-				<el-button type="primary" @click="jump('data-information')"
+				<el-button type="primary" @click="jump('data-deletion')"
 					>数据删除</el-button
 				>
 				<el-button type="primary" @click="jump('daily-inspection')"
@@ -190,8 +190,8 @@ export default class Home extends Vue {
 
 		if (this.m_current_road_id != "") {
 			// 去掉首尾的空格
-			let trim = this.m_current_road_id.trim();
-			this.m_current_road_id = trim.length == 0 ? "" : trim;
+			// let trim = this.m_current_road_id.trim();
+			// this.m_current_road_id = trim.length == 0 ? "" : trim;
 
 			// 如果已经存在参数
 			if (
@@ -233,7 +233,7 @@ export default class Home extends Vue {
 
 	jump(target: string): void {
 		this.$router.push({
-			path: target,
+			path: "home/" + target,
 			query: { road_id: this.m_current_road_id },
 		});
 	}

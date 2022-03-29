@@ -1,20 +1,13 @@
 <template>
 	<!-- 维修计划 -->
-	<div id="MaintenancePlan">
-		<div class="title centered-vertical">
-			<ion-icon name="list-outline"></ion-icon>
-			<span>道路维修计划表</span>
-		</div>
-
-		<el-table
-			class="m-table"
-			:data="m_table"
-			stripe
-			border
-			highlight-current-row
-			v-loading="m_table_loading"
-		>
-			<el-table-column
+	<PublicTable
+		id="MaintenancePlan"
+		:table_data="m_table"
+		:title="m_table_title"
+		:update_table="update_table"
+	>
+		<template slot="table"
+			><el-table-column
 				prop="check"
 				type="selection"
 				align="center"
@@ -38,117 +31,45 @@
 				label="现场实施是否完成"
 				align="center"
 			>
-			</el-table-column>
-		</el-table>
+			</el-table-column
+		></template>
 
-		<el-pagination
-			:page-size="m_table_page_size"
-			:total="m_table_total"
-			background
-			:current-page.sync="m_current_page"
-			@current-change="updateTable()"
-			layout="total, prev, pager, next, jumper"
-		>
-		</el-pagination>
-
-		<div class="option">
-			<div class="centered">
-				<el-button type="primary" plain size="medium"> 查看 </el-button>
-				<el-button type="primary" plain size="medium"> 呈批表 </el-button>
-			</div>
-		</div>
-	</div>
+		<template slot="button">
+			<el-button type="primary" plain size="medium"> 查看 </el-button>
+			<el-button type="primary" plain size="medium"> 呈批表 </el-button>
+		</template>
+	</PublicTable>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { MyAxios } from "@/typings/MyAxios";
 import { Fund } from "@/typings/Fund";
+import PublicTable from "@/components/PublicTable.vue";
 
-@Component
+@Component({
+	components: {
+		PublicTable,
+	},
+})
 export default class MaintenancePlan extends Vue {
 	// table
+	private m_table_title = "道路维修计划表";
 	private m_table = new Array<Fund>();
-	private m_table_loading = true;
-	// 分页
-	private m_table_page_size = 0;
-	private m_table_total = 0;
-	private m_current_page = 1;
 
-	constructor() {
-		super();
-
-		window.addEventListener("resize", () => {
-			this.updatePageSize();
+	public update_table(
+		page_size: number,
+		page: number,
+		callback: (total: number) => void
+	) {
+		MyAxios.get_monthly_funding_request(page_size, page, (total, data) => {
+			callback(total);
+			this.m_table = data;
 		});
-	}
-
-	mounted(): void {
-		this.updatePageSize();
-	}
-
-	public updatePageSize(): void {
-		let table_div = document.getElementsByClassName(
-			"m-table"
-		)[0] as HTMLElement;
-		this.m_table_page_size = Math.floor(table_div.offsetHeight / 48) - 1;
-		this.updateTable();
-	}
-
-	public updateTable(): void {
-		this.m_table_loading = true;
-
-		MyAxios.get_monthly_funding_request(
-			this.m_table_page_size,
-			this.m_current_page,
-			(total, data) => {
-				this.m_table_total = total;
-				this.m_table = data;
-			}
-		);
-
-		// setTimeout to debug
-		setTimeout(() => (this.m_table_loading = false), 300);
 	}
 }
 </script>
 
 <style scoped lang="scss">
 @import "@/themes/normal.scss";
-
-#MaintenancePlan {
-	height: 100%;
-}
-
-.title {
-	height: 40px;
-
-	span {
-		margin-left: 5px;
-	}
-}
-
-.search {
-	.el-input,
-	.el-select {
-		width: 100%;
-	}
-}
-
-.m-table {
-	margin-top: 10px;
-	height: calc(100% - 172px);
-}
-
-.pagination {
-	width: 100%;
-	background-color: lemonchiffon;
-}
-
-.el-pagination {
-	display: flex;
-	align-items: center;
-	justify-content: right;
-	height: 40px;
-}
 </style>

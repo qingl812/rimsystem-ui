@@ -1,7 +1,7 @@
 import { BranchRoad } from "./BranchRoad";
 
 export class Road {
-    public branch_road = new Array<BranchRoad>();
+	public branch_road = new Array<BranchRoad>();
 	public name = "";
 	public id = "";
 	public type = "";
@@ -13,4 +13,5 @@ export class Road {
 	public blind_road_tile_type = "";
 	public curb_type = "";
 	public unit = "";
+	public coordinate = "";
 }
