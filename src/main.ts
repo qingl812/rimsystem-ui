@@ -2,7 +2,7 @@ import Vue from "vue";
 import App from "@/App.vue";
 import router from "@/router";
 import ElementUI from "element-ui";
-import "@/themes/element_ui.scss";
+import "@/styles/element_ui.scss";
 import BaiduMap from "vue-baidu-map";
 import { MyAxios } from "@/typings/MyAxios";
 

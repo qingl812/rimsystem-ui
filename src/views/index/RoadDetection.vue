@@ -5,103 +5,7 @@
 			<SideBar :title="m_side_title" :options="m_options"></SideBar>
 		</el-aside>
 		<el-main>
-			<PublicTable
-				:table_data="m_table"
-				:title="m_table_title"
-				:update_table="update_table"
-				:has_search="true"
-			>
-				<template slot="table">
-					<el-table-column
-						prop="check"
-						type="selection"
-						align="center"
-						width="60"
-					>
-					</el-table-column>
-					<el-table-column
-						prop="id"
-						label="道路编号"
-						align="center"
-						width="100"
-					>
-					</el-table-column>
-					<el-table-column
-						prop="name"
-						label="道路名称"
-						align="center"
-					>
-					</el-table-column>
-					<el-table-column
-						prop="type"
-						label="道路类型"
-						align="center"
-					>
-					</el-table-column>
-					<el-table-column
-						prop="maintenance_level"
-						label="道路养护等级"
-						align="center"
-					>
-					</el-table-column>
-					<el-table-column
-						prop="unit"
-						label="管理单位"
-						align="center"
-					>
-					</el-table-column>
-				</template>
-
-				<template slot="search">
-					<el-col :span="4" class="centered-vertical">
-						<el-input
-							placeholder="道路名称"
-							v-model="m_search_name"
-							clearable
-						>
-						</el-input>
-					</el-col>
-					<el-col :span="4" class="centered-vertical">
-						<el-select
-							v-model="m_search_type"
-							clearable
-							placeholder="道路类型"
-						>
-							<el-option
-								v-for="item in m_road_types"
-								:key="item"
-								:label="item"
-								:value="item"
-							>
-							</el-option>
-						</el-select>
-					</el-col>
-					<el-col :span="4" class="centered-vertical">
-						<el-select
-							v-model="m_search_mlevel"
-							clearable
-							placeholder="道路养护等级"
-						>
-							<el-option
-								v-for="item in m_road_mlevels"
-								:key="item"
-								:label="item"
-								:value="item"
-							>
-							</el-option>
-						</el-select>
-					</el-col>
-				</template>
-
-				<template slot="button">
-					<el-button type="primary" plain size="medium">
-						查看巡查记录
-					</el-button>
-					<el-button type="primary" plain size="medium">
-						巡查汇总
-					</el-button>
-				</template>
-			</PublicTable>
+			<router-view></router-view>
 		</el-main>
 	</el-container>
 </template>
@@ -123,10 +27,10 @@ export default class RoadDetection extends Vue {
 	// side bar
 	private m_side_title = "检测数据";
 	private m_options = [
-		{ name: "日常巡查", url: "" },
-		{ name: "巡查汇总", url: "" },
+		{ name: "日常巡查", url: "daily" },
+		{ name: "巡查汇总", url: "summary" },
 	];
-	private m_sup_url = "";
+	private m_sup_url = "road-detection";
 	// table
 	private m_table_title = "道路列表";
 	private m_table = new Array<Road>();
@@ -167,7 +71,3 @@ export default class RoadDetection extends Vue {
 	}
 }
 </script>
-
-<style scoped lang="scss">
-@import "@/themes/normal.scss";
-</style>

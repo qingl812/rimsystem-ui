@@ -8,7 +8,7 @@
 		<div v-if="typeof has_search != 'undefined' && has_search">
 			<el-row :gutter="20">
 				<slot name="search"></slot>
-				<el-col :span="1.6" class="centered-vertical">
+				<el-col :span="8" class="centered-vertical">
 					<el-button
 						type="primary"
 						icon="el-icon-search"
@@ -32,6 +32,7 @@
 		</el-table>
 
 		<el-pagination
+			v-if="!(typeof no_pagination != 'undefined' && no_pagination)"
 			:page-size="m_table_page_size"
 			:total="m_table_total"
 			background
@@ -63,6 +64,7 @@ export default class PublicTable extends Vue {
 		callback: (total: number) => void // 回调函数用于获取table数据总量
 	) => void;
 	@Prop({ required: false }) readonly has_search?: boolean;
+	@Prop({ required: false }) readonly no_pagination?: boolean;
 
 	private m_table_loading = false; // table 正在加载中
 	private m_table_page_size = 0; // table 每页可显示的数量
@@ -78,12 +80,11 @@ export default class PublicTable extends Vue {
 	}
 
 	mounted(): void {
-		if (typeof this.has_search == "undefined") {
-			let div = document.getElementsByClassName(
-				"m-table"
-			)[0] as HTMLElement;
-			div.style.height = "calc(100% - " + "140px)";
-		}
+		let add_size = 0;
+		if (typeof this.has_search == "undefined") add_size += 40;
+		if (typeof this.no_pagination != "undefined") add_size += 40;
+		let div = document.getElementsByClassName("m-table")[0] as HTMLElement;
+		div.style.height = "calc(100% - " + "200px + " + add_size + "px)";
 
 		this.updatePageSize();
 	}
@@ -96,7 +97,7 @@ export default class PublicTable extends Vue {
 		this.updateTable();
 	}
 
-	private updateTable(): void {
+	public updateTable(): void {
 		this.m_table_loading = true;
 
 		if (this.update_table != undefined) {
@@ -108,6 +109,7 @@ export default class PublicTable extends Vue {
 
 					// setTimeout to debug
 					setTimeout(() => (this.m_table_loading = false), 300);
+					// this.m_table_loading = false
 				}
 			);
 		}
@@ -116,8 +118,6 @@ export default class PublicTable extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/themes/normal.scss";
-
 .PublicTable {
 	height: 100%;
 	width: 100%;
@@ -147,6 +147,14 @@ export default class PublicTable extends Vue {
 		align-items: center;
 		justify-content: right;
 		height: 40px;
+	}
+
+	.option {
+		margin-top: 10px;
+
+		a {
+			margin-right: 10px;
+		}
 	}
 }
 </style>

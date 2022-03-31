@@ -104,7 +104,7 @@
 <script lang="ts">
 import { Road } from "@/typings/Road";
 import { Component, Vue } from "vue-property-decorator";
-import GlobalScss from "@/themes/normal.scss";
+import GlobalScss from "@/styles/normal.scss";
 import { MyAxios } from "@/typings/MyAxios";
 
 @Component
@@ -241,8 +241,6 @@ export default class Home extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/themes/normal.scss";
-
 .el-divider {
 	margin: 0;
 	border-bottom: $border-divider;

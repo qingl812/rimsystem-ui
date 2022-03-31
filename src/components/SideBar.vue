@@ -36,7 +36,7 @@ export default class SideBar extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/themes/normal.scss";
+
 .title {
 	height: 40px;
 	color: black;

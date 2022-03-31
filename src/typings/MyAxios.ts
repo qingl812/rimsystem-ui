@@ -6,8 +6,8 @@ import router from "@/router";
 import { BranchRoad } from "./BranchRoad";
 import { Road } from "./Road";
 import { Fund } from "./Fund";
-import { ElStep } from "element-ui/types/step";
 import { RoadFile } from "./RoadFile";
+import { Inspection } from "./Inspection";
 
 export class MyAxios {
 	// 初始化 axios
@@ -43,22 +43,23 @@ export class MyAxios {
 		// 		return Promise.reject(error);
 		// 	}
 		// );
+
 		// 添加一个响应拦截器，在服务器返回 401 时退回到登陆界面
-		// axios.interceptors.response.use(
-		// 	(response: AxiosResponse) => {
-		// 		return response;
-		// 	},
-		// 	(error) => {
-		// 		// 处理响应错误
-		// 		if (error.response.status == 401) {
-		// 			localStorage.setItem("authentication", "");
-		// 			router.push({
-		// 				path: "login",
-		// 			});
-		// 		}
-		// 		return Promise.reject(error);
-		// 	}
-		// );
+		axios.interceptors.response.use(
+			(response: AxiosResponse) => {
+				return response;
+			},
+			(error) => {
+				// 处理响应错误
+				if (error.response.status == 401) {
+					localStorage.setItem("authentication", "");
+					router.push({
+						path: "login",
+					});
+				}
+				return Promise.reject(error);
+			}
+		);
 	}
 
 	// 登录
@@ -248,7 +249,6 @@ export class MyAxios {
 			},
 		}).then((response: AxiosResponse) => {
 			if (response.data.code == 200) {
-				// eslint-disable-next-line prefer-const
 				let ret = Array<Fund>();
 				response.data.data.pageBean.pageData.forEach((element: any) => {
 					let t = new Fund();
@@ -288,7 +288,6 @@ export class MyAxios {
 			},
 		}).then((response: AxiosResponse) => {
 			if (response.data.code == 200) {
-				// eslint-disable-next-line prefer-const
 				let ret = Array<Fund>();
 				response.data.data.pageInfo.list.forEach((element: any) => {
 					let t = new Fund();
@@ -361,6 +360,9 @@ export class MyAxios {
 				t.maintenance_level = road.roadMaintenanceGrade;
 				t.total_length = road.roadLength;
 				t.coordinate = road.roadCoordinate;
+				// BranchRoad
+				let b = new BranchRoad();
+
 				callback(t);
 			}
 		});
@@ -394,5 +396,45 @@ export class MyAxios {
 		t.id = "123";
 		ret.push(t);
 		callback(10, ret);
+	}
+
+	// 巡查汇总
+	public static get_inspection_summary(
+		year: string,
+		month: string,
+		callback: (data: Array<Inspection>) => void
+	): void {
+		axios({
+			method: "post",
+			url: "/searchPatrolByMonth",
+			params: {
+				year: Number(year),
+				month: Number(month),
+			},
+		}).then((response: AxiosResponse) => {
+			if (response.data.code == 200) {
+				let ret = new Array<Inspection>();
+				let data = response.data.data.patrolLogs;
+
+				data.forEach((main: any) => {
+					main.branchPatrol.forEach((element: any) => {
+						let info = element.branchRoad;
+						let t = new Inspection();
+						t.id = element.id;
+						t.name = main.roadName;
+						t.segment_name = info.branchName;
+						t.date = main.checkTime;
+						t.location_description = element.locationDescribe;
+						t.damaged_pavement_area = info.pavementBreak;
+						t.damaged_sidewalk_area = info.sidewalkBrickBreak;
+						t.damaged_blind_area = info.blindBrickBreak;
+						t.damaged_curb_length = info.curbBreak;
+						ret.push(t);
+					});
+				});
+
+				callback(ret);
+			}
+		});
 	}
 }

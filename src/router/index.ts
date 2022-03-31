@@ -80,11 +80,31 @@ const routes: Array<RouteConfig> = [
 			},
 			{
 				path: "/road-detection",
-				name: "road-detection",
 				component: () => import("@/views/index/RoadDetection.vue"),
-				meta: {
-					title: "道路检测 - 道路信息管理系统",
-				},
+				children: [
+					{
+						path: "",
+						redirect: "daily",
+					},
+					{
+						path: "daily",
+						name: "roaddetection-daily",
+						component: () =>
+							import("@/views/detect/DailyInspection.vue"),
+						meta: {
+							title: "日常巡查 - 道路检测 - 道路信息管理系统",
+						},
+					},
+					{
+						path: "summary",
+						name: "roaddetection-summary",
+						component: () =>
+							import("@/views/detect/InspectionSummary.vue"),
+						meta: {
+							title: "巡查汇总 - 道路检测 - 道路信息管理系统",
+						},
+					},
+				],
 			},
 			{
 				path: "/maintenance-management",
@@ -157,6 +177,14 @@ const routes: Array<RouteConfig> = [
 						component: () => import("@/views/money/PayManage.vue"),
 						meta: {
 							title: "资金支付管理 - 资金管理 - 道路信息管理系统",
+						},
+					},
+					{
+						path: "pay-view",
+						name: "moneymanagement-payview",
+						component: () => import("@/views/money/PayView.vue"),
+						meta: {
+							title: "支付查看 - 资金管理 - 道路信息管理系统",
 						},
 					},
 				],

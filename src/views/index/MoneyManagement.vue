@@ -29,7 +29,3 @@ export default class MoneyManagement extends Vue {
 	private m_sup_url = "money-management";
 }
 </script>
-
-<style scoped lang="scss">
-@import "@/themes/normal.scss";
-</style>

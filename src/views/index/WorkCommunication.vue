@@ -42,7 +42,3 @@ export default class WorkCommunication extends Vue {
 	];
 }
 </script>
-
-<style scoped lang="scss">
-@import "@/themes/normal.scss";
-</style>

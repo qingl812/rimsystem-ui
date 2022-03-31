@@ -67,7 +67,6 @@ export default class SideTree extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/themes/normal.scss";
 
 .title {
 	height: 40px;
@@ -86,7 +85,7 @@ export default class SideTree extends Vue {
 			color: #304080;
 
 			width: 100%;
-			div {
+			span {
 				margin-left: 2px;
 			}
 		}

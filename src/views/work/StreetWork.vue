@@ -15,7 +15,3 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class StreetWork extends Vue {}
 </script>
-
-<style scoped lang="scss">
-@import "@/themes/normal.scss";
-</style>

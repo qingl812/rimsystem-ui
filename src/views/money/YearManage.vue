@@ -10,7 +10,3 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class YearManage extends Vue {}
 </script>
-
-<style scoped lang="scss">
-@import "@/themes/normal.scss";
-</style>
