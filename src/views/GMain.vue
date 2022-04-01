@@ -1,5 +1,5 @@
 <template>
-	<div id="withHead">
+	<div id="GMain">
 		<!-- head -->
 		<div class="ghead centered-vertical">
 			<router-link to="/">广州省惠州市道路管理系统</router-link>
@@ -41,32 +41,32 @@ import { Component, Vue } from "vue-property-decorator";
 import { MyAxios } from "@/typings/MyAxios";
 
 @Component
-export default class WithHead extends Vue {
+export default class GMain extends Vue {
 	// navigate
 	private m_navigate_option = [
-		{ id: "1", name: "首页", url: "/home" },
-		{ id: "2", name: "现场签证记录", url: "/visa-record" },
-		{ id: "3", name: "道路资料", url: "/road-information" },
-		{ id: "4", name: "道路检测", url: "/road-detection" },
-		{ id: "5", name: "维修管理", url: "/maintenance-management" },
-		{ id: "6", name: "资金管理", url: "/money-management" },
-		{ id: "7", name: "工作沟通", url: "/work-communication" },
-		{ id: "8", name: "系统管理", url: "/system-management" },
-		{ id: "9", name: "注销", url: "/logout" },
+		{ name: "首页", url: "/home" },
+		{ name: "现场签证记录", url: "/visa-record" },
+		{ name: "道路资料", url: "/road-information" },
+		{ name: "道路检测", url: "/road-detection" },
+		{ name: "维修管理", url: "/maintenance-management" },
+		{ name: "资金管理", url: "/money-management" },
+		{ name: "工作沟通", url: "/work-communication" },
+		{ name: "系统管理", url: "/system-management" },
+		{ name: "注销", url: "/logout" },
 	];
-	private m_navigate_active = this.m_navigate_option[0].url;
+	private m_navigate_active = this.m_navigate_option[1].url;
 	// status
 	private m_status = new Array<string>();
-	// Vue Router 路径对象
-	private m_route = this.$route;
 
 	created() {
-		this.m_navigate_option.forEach((element) => {
-			// 判断一级路由
-			if (element.url.match(this.$route.matched[1].regex) != null) {
-				this.m_navigate_active = element.url;
-				return;
-			}
+		this.$router.onReady(() => {
+			this.m_navigate_option.forEach((element) => {
+				// 判断一级路由
+				if (element.url.match(this.$route.matched[1].regex) != null) {
+					this.m_navigate_active = element.url;
+					return;
+				}
+			});
 		});
 
 		MyAxios.get_status_info((data) => {
@@ -76,12 +76,19 @@ export default class WithHead extends Vue {
 			Vue.set(this.m_status, 3, "当前使用版本号: " + data[3]);
 		});
 	}
+
+	mounted() {
+		let divs = document.getElementsByClassName("el-menu-item");
+		let div = divs[divs.length - 1] as HTMLElement;
+		div.addEventListener("click", () => {
+			MyAxios.logout();
+		});
+	}
 }
 </script>
 
-<style lang="scss">
-
-#withHead {
+<style lang="scss" scoped>
+#GMain {
 	.ghead {
 		background: linear-gradient($head_background, white);
 		height: $ghead-height;

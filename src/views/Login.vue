@@ -42,12 +42,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { MyAxios } from "@/typings/MyAxios";
+import App from "@/App.vue";
 
 @Component
 export default class Login extends Vue {
 	private m_username = "";
 	private m_password = "";
 	private m_msg = "";
+	private m_app = this.$parent as App;
 
 	login(): void {
 		MyAxios.login(this.m_username, this.m_password, (data) => {

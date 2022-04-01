@@ -118,6 +118,7 @@ export default class PublicTable extends Vue {
 </script>
 
 <style scoped lang="scss">
+
 .PublicTable {
 	height: 100%;
 	width: 100%;

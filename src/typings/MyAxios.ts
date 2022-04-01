@@ -52,14 +52,19 @@ export class MyAxios {
 			(error) => {
 				// 处理响应错误
 				if (error.response.status == 401) {
-					localStorage.setItem("authentication", "");
-					router.push({
-						path: "login",
-					});
+					this.logout();
 				}
 				return Promise.reject(error);
 			}
 		);
+	}
+
+	// 注销
+	public static logout(): void {
+		localStorage.setItem("authentication", "");
+		router.push({
+			path: "login",
+		});
 	}
 
 	// 登录
