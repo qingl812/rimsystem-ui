@@ -442,4 +442,26 @@ export class MyAxios {
 			}
 		});
 	}
+
+	// 某条道路的日常巡查，两个年月日之间或全部
+	public static get_inspection(
+		page_size: number, // 每页有几个
+		page: number, // 第几页
+		road_id: string, // road id
+		begin_date: Date | null, // 开始时间，可以为空
+		end_date: Date | null, // 结束时间，可以为空
+		callback: (data: Array<Inspection>) => void
+	): void {
+		// axios({
+		// 	method: "post",
+		// 	url: "/searchPatrolByTime",
+		// 	params: {
+		// 		roadId: Number(road_id),
+		// 	},
+		// }).then((response: AxiosResponse) => {
+		// 	if (response.data.code == 200) {
+		// 		callback(new Array<Inspection>());
+		// 	}
+		// });
+	}
 }

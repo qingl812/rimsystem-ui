@@ -6,9 +6,9 @@
 		</div>
 
 		<div v-if="typeof has_search != 'undefined' && has_search">
-			<el-row :gutter="20">
+			<el-row :gutter="20" type="flex" justify="start">
 				<slot name="search"></slot>
-				<el-col :span="8" class="centered-vertical">
+				<el-col>
 					<el-button
 						type="primary"
 						icon="el-icon-search"
@@ -118,7 +118,6 @@ export default class PublicTable extends Vue {
 </script>
 
 <style scoped lang="scss">
-
 .PublicTable {
 	height: 100%;
 	width: 100%;

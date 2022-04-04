@@ -55,14 +55,16 @@ $active-link-color: #e6a23c;
 }
 
 // 经典左右布局
-.el-aside {
-	height: $gmain-height;
-	max-width: $gaside-width;
-	background-color: $aside-background-color;
-}
+.el-container {
+	.el-aside {
+		height: $gmain-height;
+		max-width: $gaside-width;
+		background-color: $aside-background-color;
+	}
 
-.el-main {
-	padding-top: 0;
-	padding-bottom: 0;
-	background-color: $gmain-background-color;
+	.el-main {
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+		background-color: $gmain-background-color;
+	}
 }
