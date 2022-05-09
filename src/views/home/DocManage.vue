@@ -167,7 +167,6 @@ export default class VisaRecord extends Vue {
 </script>
 
 <style scoped lang="scss">
-
 #DocManage {
 	.el-aside {
 		height: $gmain-height;

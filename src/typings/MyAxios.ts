@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
+import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from "axios";
 import router from "@/router";
 import { BranchRoad } from "./BranchRoad";
 import { Road } from "./Road";
@@ -133,25 +133,18 @@ export class MyAxios {
 	public static get_road_maintenance_level_list(
 		callback: (data: Array<string>) => void
 	): void {
-		// axios({
-		// 	method: "get",
-		// 	url: "/api",
-		// }).then((response: AxiosResponse) => {
-		// 	// eslint-disable-next-line prefer-const
-		// 	let ret = Array<string>();
-		// 	// response.data.forEach((element: string) => {
-		// 	// 	ret.push(element);
-		// 	// });
-		// 	callback(ret);
-		// });
-
-		// eslint-disable-next-line prefer-const
-		let ret = Array<string>();
-		ret.push("a");
-		ret.push("b");
-		ret.push("c");
-		ret.push("d");
-		callback(ret);
+		axios({
+			method: "post",
+			url: "/roadType/searchType",
+		}).then((response: AxiosResponse) => {
+			let ret = Array<string>();
+			if (response.status == 200) {
+				response.data.forEach((element: any)=>{
+					ret.push(element.name);
+				})
+			}
+			callback(ret);
+		});
 	}
 
 	// 道路类型名字
@@ -325,22 +318,16 @@ export class MyAxios {
 	public static get_file_type_name_list(
 		callback: (data: Array<string>) => void
 	): void {
-		// 	axios({
-		// 		method: "post",
-		// 		url: "/",
-		// 	}).then((response: AxiosResponse) => {
-		// 		let ret = Array<string>();
-		// 		response.data.forEach((element: any) => {
-		// 			ret.push(element.name);
-		// 		});
-		// 		callback(ret);
-		// 	});
-		let ret = Array<string>();
-		ret.push("a");
-		ret.push("b");
-		ret.push("c");
-		ret.push("d");
-		callback(ret);
+		axios({
+			method: "post",
+			url: "/",
+		}).then((response: AxiosResponse) => {
+			let ret = Array<string>();
+			response.data.forEach((element: any) => {
+				ret.push(element.name);
+			});
+			callback(ret);
+		});
 	}
 
 	// 根据 road_id 获取道路信息
@@ -356,19 +343,31 @@ export class MyAxios {
 			},
 		}).then((response: AxiosResponse) => {
 			if (response.data.code == 200) {
-				let t = new Road();
+				let ret = new Road();
 				const road = response.data.data.road;
-				t.id = road.id;
-				t.name = road.roadName;
-				t.type = road.roadType;
-				t.segment_number = road.roadNum;
-				t.maintenance_level = road.roadMaintenanceGrade;
-				t.total_length = road.roadLength;
-				t.coordinate = road.roadCoordinate;
+				ret.id = road.id;
+				ret.name = road.roadName;
+				ret.type = road.roadType;
+				ret.segment_number = road.roadNum;
+				ret.maintenance_level = road.roadMaintenanceGrade;
+				ret.total_length = road.roadLength;
+				ret.coordinate = road.roadCoordinate;
 				// BranchRoad
-				let b = new BranchRoad();
+				road.branchRoads.forEach((element: any) => {
+					let b = new BranchRoad();
+					b.id = element.id;
+					b.name = element.branchName;
+					b.begin_location = element.branchBlindBrickType;
+					b.curb_type = element.branchCurbType;
+					b.length = element.branchLength;
+					b.num = element.branchNum;
+					b.road_pavement_type = element.branchPavementType;
+					b.sidewalk_tile_type = element.branchSidewalkBrickType;
 
-				callback(t);
+					ret.branch_road.push(b);
+				});
+
+				callback(ret);
 			}
 		});
 	}
@@ -426,7 +425,7 @@ export class MyAxios {
 						let info = element.branchRoad;
 						let t = new Inspection();
 						t.id = element.id;
-						t.name = main.roadName;
+						t.road_name = main.roadName;
 						t.segment_name = info.branchName;
 						t.date = main.checkTime;
 						t.location_description = element.locationDescribe;
@@ -450,18 +449,77 @@ export class MyAxios {
 		road_id: string, // road id
 		begin_date: Date | null, // 开始时间，可以为空
 		end_date: Date | null, // 结束时间，可以为空
-		callback: (data: Array<Inspection>) => void
+		callback: (total: number, data: Array<Inspection>) => void
 	): void {
-		// axios({
-		// 	method: "post",
-		// 	url: "/searchPatrolByTime",
-		// 	params: {
-		// 		roadId: Number(road_id),
-		// 	},
-		// }).then((response: AxiosResponse) => {
-		// 	if (response.data.code == 200) {
-		// 		callback(new Array<Inspection>());
-		// 	}
-		// });
+		let begin = begin_date == null ? new Date(0) : begin_date;
+		let end = end_date == null ? new Date() : end_date;
+
+		axios({
+			method: "post",
+			url: "/searchPatrolByTime",
+			params: {
+				pageSize: page_size,
+				roadId: Number(road_id),
+				currentPage: page,
+				startTime: this.date_to_string(begin),
+				endTime: this.date_to_string(end),
+			},
+		})
+			.then((response: AxiosResponse) => {
+				if (response.data.code == 200) {
+					let ret = new Array<Inspection>();
+
+					response.data.data.pageBean.pageData.forEach(
+						(element: any) => {
+							let t = new Inspection();
+							t.id = element.id;
+							t.date = element.checkTime;
+							t.people = element.patrolPerson;
+							t.road_id = element.roadId;
+							t.road_name = element.roadName;
+							t.weather = element.weather;
+							ret.push(t);
+						}
+					);
+
+					callback(response.data.data.pageBean.totalCount, ret);
+				}
+			})
+			.catch((error: AxiosError) => {
+				callback(-1, new Array<Inspection>());
+			});
+	}
+
+	private static date_to_string(date: Date): string {
+		let year = date.getFullYear();
+		let month = date.getMonth() + 1;
+		let day = date.getDate();
+		return year + "/" + month + "/" + day;
+	}
+
+	// 创建主路的巡查记录
+	public static create_main_road_inspection(
+		date: string, // 日期
+		weather: string, // 天气
+		road_id: string, // road id
+		road_name: string, // road name
+		people: string, // 巡查人
+		callback: (success: boolean) => void
+	): void {
+		axios({
+			method: "post",
+			url: "/createOnePatrol",
+			data: {
+				checkTime: date,
+				weather: weather,
+				roadId: road_id,
+				patrolPerson: people,
+				roadName: road_name,
+			},
+		}).then((response: AxiosResponse) => {
+			if (response.data.code == 200) {
+				callback(true);
+			}
+		});
 	}
 }

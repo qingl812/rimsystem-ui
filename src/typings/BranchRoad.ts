@@ -1,6 +1,7 @@
 export class BranchRoad {
 	public name = "";
 	public id = "";
+	public num = ""; // 分段号
 	public length = "";
 	public begin_location = "";
 	public end_location = "";

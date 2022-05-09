@@ -21,7 +21,7 @@
 				width="100"
 			>
 			</el-table-column>
-			<el-table-column prop="name" label="道路名称" align="center">
+			<el-table-column prop="road_name" label="道路名称" align="center">
 			</el-table-column>
 			<el-table-column
 				prop="date"
@@ -60,17 +60,18 @@
 		</template>
 
 		<template slot="button">
+			<router-link to="add">
+				<el-button type="primary" plain size="medium">新增</el-button>
+			</router-link>
+			<el-button type="primary" plain size="medium">查看</el-button>
+			<el-button type="primary" plain size="medium">删除</el-button>
 			<el-button
+				@click="$router.back(-1)"
 				type="primary"
 				plain
 				size="medium"
-				@click="jump('doc-new')"
+				>返回</el-button
 			>
-				新增
-			</el-button>
-			<el-button type="primary" plain size="medium"> 查看 </el-button>
-			<el-button type="primary" plain size="medium"> 删除 </el-button>
-			<el-button type="primary" plain size="medium"> 返回 </el-button>
 		</template>
 	</PublicTable>
 </template>
@@ -80,7 +81,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { MyAxios } from "@/typings/MyAxios";
 import PublicTable from "@/components/PublicTable.vue";
 import { Inspection } from "@/typings/Inspection";
-import DailyInspection from "@/views/home/DailyInspection.vue";
+import { GlobalVar } from "@/typings/GlobalVar";
 
 @Component({
 	components: {
@@ -88,7 +89,6 @@ import DailyInspection from "@/views/home/DailyInspection.vue";
 	},
 })
 export default class ShowInspection extends Vue {
-	private m_road = (this.$parent.$parent.$parent as DailyInspection).m_road;
 	// table
 	private m_table_title = "日常巡查列表";
 	private m_table = new Array<Inspection>();
@@ -100,17 +100,15 @@ export default class ShowInspection extends Vue {
 		page: number,
 		callback: (total: number) => void
 	) {
-		callback(0);
-
 		MyAxios.get_inspection(
 			page_size,
 			page,
-			this.m_road.id,
+			GlobalVar.cur_id.toString(),
 			this.m_date == null ? null : this.m_date[0],
 			this.m_date == null ? null : this.m_date[1],
-			(data) => {
-				callback(0);
+			(total, data) => {
 				this.m_table = data;
+				callback(total);
 			}
 		);
 	}

@@ -71,12 +71,25 @@ export default class PublicTable extends Vue {
 	private m_table_total = 0; // 数据总数
 	private m_current_page = 1; // table 当前处于页数
 
+	private m_retry_count = 0; // 重试查询次数
+	private m_retry_max = 3; // 最大重试次数
+
 	constructor() {
 		super();
 
 		window.addEventListener("resize", () => {
 			this.updatePageSize();
 		});
+		// 超时自动刷新
+		setInterval(() => {
+			if (
+				this.m_table_loading == true &&
+				this.m_retry_count < this.m_retry_max
+			) {
+				this.m_retry_count++;
+				this.updateTable();
+			}
+		}, 1000 * 5);
 	}
 
 	mounted(): void {
@@ -105,11 +118,18 @@ export default class PublicTable extends Vue {
 				this.m_table_page_size,
 				this.m_current_page,
 				(total) => {
-					this.m_table_total = total;
+					if (total != -1) {
+						this.m_table_total = total;
+						this.m_retry_count = 0;
 
-					// setTimeout to debug
-					setTimeout(() => (this.m_table_loading = false), 300);
-					// this.m_table_loading = false
+						// setTimeout to debug
+						setTimeout(() => (this.m_table_loading = false), 300);
+						// this.m_table_loading = false
+					} else if (this.m_retry_count < this.m_retry_max) {
+						// error
+						this.m_retry_count++;
+						return this.updateTable();
+					}
 				}
 			);
 		}

@@ -15,6 +15,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { MyAxios } from "@/typings/MyAxios";
 import SideTree, { TreeNode } from "@/components/SideTree.vue";
 import { Road } from "@/typings/Road";
+import { GlobalVar } from "@/typings/GlobalVar";
 
 @Component({
 	components: {
@@ -30,6 +31,10 @@ export default class DailyInspection extends Vue {
 			label: "",
 			isFolder: true,
 			children: [],
+			url: "inspection",
+			callback: (node) => {
+				GlobalVar.cur_id = node.id;
+			},
 		},
 	];
 	public m_road = new Road();
@@ -37,18 +42,25 @@ export default class DailyInspection extends Vue {
 	mounted(): void {
 		// 如果没有参数 road_id 返回主页
 		let t = this.$route.query.road_id;
-		this.m_road.id = typeof t == "string" ? t : "";
-		if ((this, this.m_road.id == "")) this.$router.replace("/home");
+		this.m_road.id = typeof t == "string" ? t : "-1";
+		// global var
+		GlobalVar.cur_id = Number(this.m_road.id);
 
-		// side
+		this.m_tree[0].id = Number(this.m_road.id);
 		MyAxios.get_road_info(this.m_road.id, (data) => {
+			GlobalVar.road = data;
 			this.m_road = data;
-			this.m_tree[0].label = data.name;
 
+			// side tree
+			this.m_tree[0].label = this.m_road.name;
 			data.branch_road.forEach((element) => {
 				this.m_tree[0].children?.push({
 					id: Number(element.id),
 					label: element.name,
+					url: "inspection",
+					callback: (node) => {
+						GlobalVar.cur_id = node.id;
+					},
 				});
 			});
 		});

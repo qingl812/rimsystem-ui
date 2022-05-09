@@ -6,29 +6,33 @@
 - 采用 vue2 + typescript + element-ui 开发
 
 ## Project setup
-```
+
+```shell
 yarn install
 ```
 
 ### Compiles and hot-reloads for development
-```
+
+```shell
 yarn serve
 ```
 
 ### Compiles and minifies for production
-```
+
+```shell
 yarn build
 ```
 
 ### Lints and fixes files
-```
+
+```shell
 yarn lint
 ```
 
 ## 项目介绍
 
 - src/views 中包含所有的界面代码
-    - 其中 GMain.vue 为主界面区别于不带导航栏和状态栏的 登陆界面
-    - src/home 文件夹中包括导航栏跳转到的每个界面
-    - 其他 src 中的文件夹即为 home 中每个界面的子界面
+  - 其中 GMain.vue 为主界面区别于不带导航栏和状态栏的 登陆界面
+  - src/home 文件夹中包括导航栏跳转到的每个界面
+  - 其他 src 中的文件夹即为 home 中每个界面的子界面
 - src/typings/MyAxios.ts 中包括项目内所有向后端发送请求的代码
