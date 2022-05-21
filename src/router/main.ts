@@ -3,7 +3,6 @@ import detection_routes from "@/router/detection";
 import maintenance_routes from "@/router/maintenance";
 import money_routes from "@/router/money";
 import communication_routes from "@/router/communication";
-import inspection_routes from "@/router/home/inspection";
 
 const main_routes: Array<RouteConfig> = [
 	{
@@ -41,8 +40,19 @@ const main_routes: Array<RouteConfig> = [
 	},
 	{
 		path: "/home/daily-inspection",
+		name: "home-dailydatadeletion",
 		component: () => import("@/views/home/DailyInspection.vue"),
-		children: inspection_routes,
+		meta: {
+			title: "日常巡查 - 主页 - 道路信息管理系统",
+		},
+	},
+	{
+		path: "/home/edit-daily-inspection",
+		name: "home-editdailydatadeletion",
+		component: () => import("@/views/home/EditDailyInspection.vue"),
+		meta: {
+			title: "日常巡查编辑 - 主页 - 道路信息管理系统",
+		},
 	},
 	// ! home
 	{

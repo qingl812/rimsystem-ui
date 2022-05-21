@@ -106,6 +106,7 @@ import { Road } from "@/typings/Road";
 import { Component, Vue } from "vue-property-decorator";
 import GlobalScss from "@/styles/normal.scss";
 import { MyAxios } from "@/typings/MyAxios";
+import { Tools } from "@/typings/Tools";
 
 @Component
 export default class Home extends Vue {
@@ -187,30 +188,7 @@ export default class Home extends Vue {
 
 	to_road(road_id: string): void {
 		this.m_current_road_id = road_id;
-
-		if (this.m_current_road_id != "") {
-			// 去掉首尾的空格
-			// let trim = this.m_current_road_id.trim();
-			// this.m_current_road_id = trim.length == 0 ? "" : trim;
-
-			// 如果已经存在参数
-			if (
-				!(
-					typeof this.$route.query.road_id == "string" &&
-					this.$route.query.road_id == this.m_current_road_id
-				)
-			) {
-				this.$router.replace({
-					query: {
-						...this.$route.query,
-						road_id: this.m_current_road_id,
-					},
-				});
-			}
-		} else {
-			if (typeof this.$route.query.road_id == "string")
-				this.$router.replace({ query: {} });
-		}
+		if (road_id != "") Tools.addRouterParam("road_id", road_id);
 
 		// 控制 status 的显示
 		let div_map = document.getElementById("bm-view") as HTMLElement;
@@ -232,9 +210,8 @@ export default class Home extends Vue {
 	}
 
 	jump(target: string): void {
-		this.$router.push({
-			path: "home/" + target,
-			query: { road_id: this.m_current_road_id },
+		Tools.goTo("/home/" + target, {
+			road_id: this.m_current_road_id,
 		});
 	}
 }

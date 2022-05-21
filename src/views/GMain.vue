@@ -54,15 +54,19 @@ export default class GMain extends Vue {
 		{ name: "系统管理", url: "/system-management" },
 		{ name: "注销", url: "/logout" },
 	];
-	private m_navigate_active = this.m_navigate_option[1].url;
+	private m_navigate_active = this.m_navigate_option[0].url;
 	// status
 	private m_status = new Array<string>();
 
 	created() {
 		this.$router.onReady(() => {
+			let path: string = this.$route.path;
+			// 第一个 / 和第二个 / 之间
+			let index = path.indexOf("/", 1);
+			path = path.substring(0, index);
+
 			this.m_navigate_option.forEach((element) => {
-				// 判断一级路由
-				if (element.url.match(this.$route.matched[1].regex) != null) {
+				if (path == element.url) {
 					this.m_navigate_active = element.url;
 					return;
 				}

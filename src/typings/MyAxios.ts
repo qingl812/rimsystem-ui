@@ -139,9 +139,9 @@ export class MyAxios {
 		}).then((response: AxiosResponse) => {
 			let ret = Array<string>();
 			if (response.status == 200) {
-				response.data.forEach((element: any)=>{
+				response.data.forEach((element: any) => {
 					ret.push(element.name);
-				})
+				});
 			}
 			callback(ret);
 		});
@@ -499,16 +499,19 @@ export class MyAxios {
 
 	// 创建主路的巡查记录
 	public static create_main_road_inspection(
-		date: string, // 日期
+		date: Date, // 日期
 		weather: string, // 天气
 		road_id: string, // road id
 		road_name: string, // road name
 		people: string, // 巡查人
 		callback: (success: boolean) => void
 	): void {
+		let format_date = this.date_to_string(date);
+		console.log(format_date);
+
 		axios({
 			method: "post",
-			url: "/createOnePatrol",
+			url: "/insertOnePatrol",
 			data: {
 				checkTime: date,
 				weather: weather,
@@ -516,10 +519,16 @@ export class MyAxios {
 				patrolPerson: people,
 				roadName: road_name,
 			},
-		}).then((response: AxiosResponse) => {
-			if (response.data.code == 200) {
-				callback(true);
-			}
-		});
+		})
+			.then((response: AxiosResponse) => {
+				callback(response.data.code == 200);
+			})
+			.catch(() => {
+				callback(false);
+			});
 	}
+
+	// 获取主路的巡查记录
+	// 获取支路的巡查记录
+	// 更新支路的巡查记录
 }
