@@ -12,7 +12,7 @@ import { Inspection } from "./Inspection";
 export class MyAxios {
 	// 初始化 axios
 	public static init(): void {
-		axios.defaults.baseURL = "http://localhost:8099/";
+		axios.defaults.baseURL = "https://dev.winterwonder.top/";
 		// 添加请求拦截器，在请求头中加 token
 		axios.interceptors.request.use(
 			function (config: AxiosRequestConfig) {

@@ -123,8 +123,8 @@ export default class PublicTable extends Vue {
 						this.m_retry_count = 0;
 
 						// setTimeout to debug
-						setTimeout(() => (this.m_table_loading = false), 300);
-						// this.m_table_loading = false
+						// setTimeout(() => (this.m_table_loading = false), 300);
+						this.m_table_loading = false
 					} else if (this.m_retry_count < this.m_retry_max) {
 						// error
 						this.m_retry_count++;

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import VueRouter from "vue-router";
 import router from "@/router";
 
 export class Tools {

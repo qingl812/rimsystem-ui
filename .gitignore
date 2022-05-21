@@ -24,3 +24,9 @@ pnpm-debug.log*
 
 # vscode
 .history
+
+# cert
+cert/*
+
+#out
+out/*
