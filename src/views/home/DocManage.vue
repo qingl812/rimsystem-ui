@@ -5,91 +5,29 @@
 			<SideTree :title="m_side_title" :data="m_tree"></SideTree>
 		</el-aside>
 
-		<el-main>
-			<PublicTable
-				:table_data="m_table"
-				:title="m_table_title"
-				:update_table="update_table"
-			>
-				<template slot="table">
-					<el-table-column
-						prop="check"
-						type="selection"
-						align="center"
-						width="60"
-					>
-					</el-table-column>
-					<el-table-column
-						prop="id"
-						label="序号"
-						align="center"
-						width="100"
-					>
-					</el-table-column>
-					<el-table-column prop="name" label="名称" align="center">
-					</el-table-column>
-					<el-table-column
-						prop="format"
-						label="格式"
-						align="center"
-						width="100"
-					>
-					</el-table-column>
-					<el-table-column
-						prop="time"
-						label="时间"
-						align="center"
-						width="200"
-					>
-					</el-table-column>
-					<el-table-column label="查看" align="center" width="60">
-						<template slot-scope="scope">
-							<ion-icon
-								@click="download(scope.$index, scope.row)"
-								name="open-outline"
-							></ion-icon>
-						</template>
-					</el-table-column>
-					<el-table-column label="下载" align="center" width="60">
-						<template slot-scope="scope">
-							<ion-icon
-								@click="download(scope.$index, scope.row)"
-								name="cloud-download-outline"
-							></ion-icon>
-						</template>
-					</el-table-column>
-				</template>
-
-				<template slot="button">
-					<el-button
-						type="primary"
-						plain
-						size="medium"
-						@click="jump('doc-new')"
-					>
-						新增
-					</el-button>
-					<el-button type="primary" plain size="medium">
-						删除
-					</el-button>
-				</template>
-			</PublicTable>
+		<el-main v-if="true">
+			<DocTable
+				:road_id="m_road.id"
+				:table_title="m_table_title"
+				:file_type="m_file_type"
+			></DocTable>
 		</el-main>
+
+		<el-main v-if="false"> </el-main>
 	</el-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { MyAxios } from "@/typings/MyAxios";
-import PublicTable from "@/components/PublicTable.vue";
 import SideTree, { TreeNode } from "@/components/SideTree.vue";
 import { Road } from "@/typings/Road";
-import { RoadFile } from "@/typings/RoadFile";
+import DocTable from "@/components/DocTable.vue";
 
 @Component({
 	components: {
 		SideTree,
-		PublicTable,
+		DocTable,
 	},
 })
 export default class VisaRecord extends Vue {
@@ -104,11 +42,9 @@ export default class VisaRecord extends Vue {
 		},
 	];
 	private m_road = new Road();
-	// table
-	private m_table_title = "";
-	private m_table = new Array<RoadFile>();
-	// search
+	// doc table
 	private m_file_type = "";
+	private m_table_title = "";
 
 	mounted(): void {
 		// 如果没有参数 road_id 返回主页
@@ -119,7 +55,6 @@ export default class VisaRecord extends Vue {
 		MyAxios.get_road_info(this.m_road.id, (data) => {
 			this.m_road = data;
 			this.m_tree[0].label = data.name;
-
 			this.m_table_title = this.m_road.name + " - 全部资料";
 		});
 		MyAxios.get_file_type_name_list((data) => {
@@ -138,23 +73,6 @@ export default class VisaRecord extends Vue {
 				});
 			}
 		});
-	}
-
-	public update_table(
-		page_size: number,
-		page: number,
-		callback: (total: number) => void
-	) {
-		MyAxios.file_info_list(
-			page_size,
-			page,
-			this.m_road.id,
-			this.m_file_type,
-			(total, data) => {
-				callback(total);
-				this.m_table = data;
-			}
-		);
 	}
 
 	// eslint-disable-next-line

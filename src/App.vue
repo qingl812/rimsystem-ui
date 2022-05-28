@@ -81,6 +81,7 @@ export default class App extends Vue {
 	]; // navigate
 	private m_navigate_active = this.m_navigate_option[0].url; // navigate
 	private m_status_list = new Array<string>(); // status
+	private m_status_inited = false; // status
 
 	constructor() {
 		super();
@@ -169,12 +170,19 @@ export default class App extends Vue {
 			this.$router.onReady(() => {
 				this.m_navigate_active = this.$route.matched[0].path;
 			});
-			App.get_status_info((data) => {
-				Vue.set(this.m_status_list, 0, "使用单位: " + data[0]);
-				Vue.set(this.m_status_list, 1, "用户名称: " + data[1]);
-				Vue.set(this.m_status_list, 2, "用户类型:" + data[2]);
-				Vue.set(this.m_status_list, 3, "当前使用版本号: " + data[3]);
-			});
+			if (!this.m_status_inited) {
+				App.get_status_info((data) => {
+					Vue.set(this.m_status_list, 0, "使用单位: " + data[0]);
+					Vue.set(this.m_status_list, 1, "用户名称: " + data[1]);
+					Vue.set(this.m_status_list, 2, "用户类型:" + data[2]);
+					Vue.set(
+						this.m_status_list,
+						3,
+						"当前使用版本号: " + data[3]
+					);
+					this.m_status_inited = true;
+				});
+			}
 
 			// 点击注销按钮退出登录
 			let divs = document.getElementsByClassName("el-menu-item");
