@@ -1,5 +1,6 @@
 // vuex.d.ts
 import { Store } from "vuex";
+import { Road } from "@/typings/interfaces";
 
 declare module "@vue/runtime-core" {
 	// 声明自己的 store state
@@ -13,6 +14,8 @@ declare module "@vue/runtime-core" {
 			page_size: number;
 			current_page: number;
 		};
+		road_info: Road;
+		branch_road_info: BranchRoad;
 	}
 
 	// 为 `this.$store` 提供类型声明

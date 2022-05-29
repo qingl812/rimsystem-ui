@@ -20,6 +20,13 @@ const routes: Array<RouteRecordRaw> = [
 		},
 	},
 	{
+		path: "/data-information",
+		component: () => import("@/views/DataInformation.vue"),
+		meta: {
+			title: "数据信息 - 道路信息管理系统",
+		},
+	},
+	{
 		path: "/:catchAll(.*)",
 		component: () => import("@/views/app/NotFound.vue"),
 		meta: {

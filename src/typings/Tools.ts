@@ -29,24 +29,21 @@ export class Tools {
 	}
 
 	// 添加参数到 vue router
-	public add_router_param(key: string, value: string) {
-		const route = router.currentRoute.value;
-		const query = JSON.parse(JSON.stringify(route.query));
-		if (query[key] != value) {
-			query[key] = value;
-			router.push({ path: route.path, query });
-		}
+	public add_router_query(key: string, value: string) {
+		router.push({
+			query: { ...router.currentRoute.value.query, [key]: value },
+		});
 	}
-	// 覆盖 vue router 参数
-	public router_param(params: LocationQuery) {
-		const route = router.currentRoute.value;
-		const query = JSON.parse(JSON.stringify(route.query));
-		if (JSON.stringify(query) != JSON.stringify(params)) {
-			router.push({ path: route.path, query: params });
-		}
+	// 删除 vue router 参数
+	public remove_query(key: string) {
+		const newQuery = JSON.parse(
+			JSON.stringify(router.currentRoute.value.query)
+		);
+		delete newQuery[key];
+		router.push({ query: newQuery });
 	}
 	// 获取参数
-	public get_router_param(key: string): string {
+	public get_router_query(key: string): string {
 		const query = window.location.search.substring(1);
 		const vars = query.split("&");
 		for (let i = 0; i < vars.length; i++) {
@@ -57,18 +54,9 @@ export class Tools {
 		}
 		return "";
 	}
-	// 跳转到指定 url 和参数
-	public set_router(url: string, params: LocationQuery) {
-		const route = router.currentRoute.value;
-		const path = route.path;
-		const query = JSON.parse(JSON.stringify(route.query));
-		if (path != url || JSON.stringify(query) != JSON.stringify(params)) {
-			router.push({ path: url, query: params });
-		}
-	}
 
 	public logout() {
-		console.log("hello")
+		console.log("hello");
 		if (store.state.page_status != "unlogged") {
 			this.success("退出登录");
 			store.commit("set_page_status", "unlogged");

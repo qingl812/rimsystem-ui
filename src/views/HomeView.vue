@@ -50,7 +50,8 @@
 				<el-button type="primary" @click="$router.push('doc-manage')">
 					文档管理
 				</el-button>
-				<el-button type="primary" @click="$router.push('data-information')">
+				<el-button type="primary"
+					@click="$router.push({ path: 'data-information', query: { road_id: current_road_id } })">
 					数据信息
 				</el-button>
 				<el-button type="primary" @click="$router.push('data-deletion')">
@@ -121,7 +122,7 @@ export default defineComponent({
 			});
 		},
 		get_road_id() {
-			this.current_road_id = tools.get_router_param("road_id");
+			this.current_road_id = tools.get_router_query("road_id");
 			let sign = false;
 			for (const i in this.road_list) {
 				if (this.road_list[i].id == this.current_road_id) {
