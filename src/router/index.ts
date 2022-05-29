@@ -13,6 +13,13 @@ const routes: Array<RouteRecordRaw> = [
 		},
 	},
 	{
+		path: "/road-information",
+		component: () => import("@/views/RoadInformation.vue"),
+		meta: {
+			title: "道路资料 - 道路信息管理系统",
+		},
+	},
+	{
 		path: "/:catchAll(.*)",
 		component: () => import("@/views/app/NotFound.vue"),
 		meta: {
