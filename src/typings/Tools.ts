@@ -1,47 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import router from "@/router";
-import { Vue } from "vue-property-decorator";
+import { ElMessage } from "element-plus";
+import { LocationQuery } from "vue-router";
+import store from "@/store";
 
-export class Tools extends Vue {
-	// 添加参数到 vue router
-	public static addRouterParam(key: string, value: string) {
-		const route = router.currentRoute;
-		const query = JSON.parse(JSON.stringify(route.query));
-		if (query[key] != value) {
-			query[key] = value;
-			router.push({ path: route.path, query });
-		}
-	}
-
-	// 添加参数到 vue router
-	public static routerParam(params: any) {
-		const route = router.currentRoute;
-		const query = JSON.parse(JSON.stringify(route.query));
-		if (JSON.stringify(query) != JSON.stringify(params)) {
-			router.push({ path: route.path, query: params });
-		}
-	}
-
-	// 获取参数
-	public static getRouterParam(key: string): string {
-		const route = router.currentRoute;
-		const query = JSON.parse(JSON.stringify(route.query));
-		return query[key] == undefined ? "" : query[key];
-	}
-
-	// 跳转到指定 url 和参数
-	public static goTo(url: string, params: any) {
-		const route = router.currentRoute;
-		const path = route.path;
-		const query = JSON.parse(JSON.stringify(route.query));
-		if (path != url || JSON.stringify(query) != JSON.stringify(params)) {
-			router.push({ path: url, query: params });
-		}
-	}
-
+export class Tools {
 	// 单例模式
 	private static _instance: Tools | undefined;
-
 	static get instance(): Tools {
 		if (this._instance == undefined) {
 			this._instance = new Tools();
@@ -50,48 +14,66 @@ export class Tools extends Vue {
 	}
 
 	// 成功消息提示
-	public static success(msg: string) {
-		this.instance.$notify({
+	public success(msg: string) {
+		ElMessage({
+			message: msg,
 			type: "success",
-			title: "成功",
-			message: msg,
 		});
 	}
-
 	// 错误消息提示
-	public static error(msg: string) {
-		this.instance.$notify.error({
-			title: "错误",
+	public error(msg: string) {
+		ElMessage({
 			message: msg,
+			type: "warning",
 		});
 	}
 
-	public static logout() {
-		if (Tools.status != "unlogged") {
-			Tools.status = "unlogged";
-			Tools.success("退出登录");
+	// 添加参数到 vue router
+	public add_router_param(key: string, value: string) {
+		const route = router.currentRoute.value;
+		const query = JSON.parse(JSON.stringify(route.query));
+		if (query[key] != value) {
+			query[key] = value;
+			router.push({ path: route.path, query });
+		}
+	}
+	// 覆盖 vue router 参数
+	public router_param(params: LocationQuery) {
+		const route = router.currentRoute.value;
+		const query = JSON.parse(JSON.stringify(route.query));
+		if (JSON.stringify(query) != JSON.stringify(params)) {
+			router.push({ path: route.path, query: params });
+		}
+	}
+	// 获取参数
+	public get_router_param(key: string): string {
+		const query = window.location.search.substring(1);
+		const vars = query.split("&");
+		for (let i = 0; i < vars.length; i++) {
+			const pair = vars[i].split("=");
+			if (pair[0] == key) {
+				return pair[1];
+			}
+		}
+		return "";
+	}
+	// 跳转到指定 url 和参数
+	public set_router(url: string, params: LocationQuery) {
+		const route = router.currentRoute.value;
+		const path = route.path;
+		const query = JSON.parse(JSON.stringify(route.query));
+		if (path != url || JSON.stringify(query) != JSON.stringify(params)) {
+			router.push({ path: url, query: params });
 		}
 	}
 
-	constructor() {
-		super();
-	}
-
-	public static status: string; // page status
-
-	private static _token: string | undefined;
-	public static get token(): string {
-		if (this._token == undefined) {
-			const authentication = localStorage.getItem("authentication");
-			this._token = authentication == undefined ? "" : authentication;
+	public logout() {
+		console.log("hello")
+		if (store.state.page_status != "unlogged") {
+			this.success("退出登录");
+			store.commit("set_page_status", "unlogged");
 		}
-		return this._token;
-	}
-	public static set token(new_value: string) {
-		const old_value = this._token;
-		this._token = new_value;
-		if (new_value == "" && old_value != "")
-			localStorage.removeItem("authentication");
-		localStorage.setItem("authentication", new_value);
 	}
 }
+
+export default Tools.instance;

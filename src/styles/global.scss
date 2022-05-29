@@ -1,0 +1,40 @@
+html body {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	min-width: 1000px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+/*Flex布局 垂直居中 水平居中*/
+.centered {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/*Flex布局 垂直居中*/
+.centered-vertical {
+	display: flex;
+	align-items: center;
+}
+
+// 经典左右布局
+.global-layout {
+	.el-aside {
+		height: calc(100vh - 61px - 40px);
+		max-width: 250px;
+		background-color: #ddefff;
+	}
+
+	.el-main {
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+		background-color: bisque;
+	}
+}
