@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
 	},
 	{
 		path: "/home",
-		component: () => import("@/views/app/HomeView.vue"),
+		component: () => import("@/views/HomeView.vue"),
 		meta: {
 			title: "主页 - 道路信息管理系统",
 		},

@@ -7,6 +7,7 @@ import "element-plus/dist/index.css";
 import "@/styles/global.scss";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import tools from "@/typings/Tools";
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
 // axios config
 axios.defaults.baseURL = "https://dev.winterwonder.top/";
@@ -57,4 +58,8 @@ export const app = createApp(App);
 app.use(store);
 app.use(router);
 app.use(ElementPlus);
+for (const [key, comp] of Object.entries(ElementPlusIconsVue)) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	app.component(key, comp as any);
+}
 app.mount("#app");

@@ -27,7 +27,7 @@ html {
 // 经典左右布局
 .global-layout {
 	.el-aside {
-		height: calc(100vh - 61px - 40px);
+		height: calc(100vh - 100px - 61px - 40px);
 		max-width: 250px;
 		background-color: #ddefff;
 	}

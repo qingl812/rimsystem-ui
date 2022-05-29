@@ -6,6 +6,8 @@ declare module "@vue/runtime-core" {
 	interface State {
 		token: string;
 		page_status: string;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		datas: any;
 	}
 
 	// 为 `this.$store` 提供类型声明

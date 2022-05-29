@@ -1,9 +1,12 @@
+import axios, { AxiosResponse } from "axios";
 import { createStore } from "vuex";
 
 export default createStore({
 	state: {
 		token: "",
 		page_status: "",
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		datas: {} as any,
 	},
 	getters: {},
 	mutations: {
@@ -63,6 +66,21 @@ export default createStore({
 			}
 		},
 	},
-	actions: {},
+	actions: {
+		get_datas(store, name) {
+			if (name == "units" && store.state.datas.units == undefined) {
+				store.state.datas.units = new Array<string>();
+				axios({
+					method: "get",
+					url: "/allManagement",
+				}).then((response: AxiosResponse) => {
+					if (response.data.code == 200) {
+						store.state.datas.units =
+							response.data.data.Organization;
+					}
+				});
+			}
+		},
+	},
 	modules: {},
 });
