@@ -27,6 +27,27 @@ const routes: Array<RouteRecordRaw> = [
 		},
 	},
 	{
+		path: "/road-detection",
+		component: () => import("@/views/RoadDetection.vue"),
+		meta: {
+			title: "道路检测 - 道路信息管理系统",
+		},
+	},
+	{
+		path: "/maintenance-management",
+		component: () => import("@/views/MaintenanceManagement.vue"),
+		meta: {
+			title: "维修管理 - 道路信息管理系统",
+		},
+	},
+	{
+		path: "/money-management",
+		component: () => import("@/views/MoneyManagement.vue"),
+		meta: {
+			title: "资金管理 - 道路信息管理系统",
+		},
+	},
+	{
 		path: "/:catchAll(.*)",
 		component: () => import("@/views/app/NotFound.vue"),
 		meta: {
