@@ -53,6 +53,7 @@ export default createStore({
 		},
 		road_info: new RoadInfo(),
 		branch_road_info: new BranchRoadInfo(),
+		reload_router: 0, // 刷新路由
 	},
 	getters: {},
 	mutations: {
@@ -160,12 +161,12 @@ export default createStore({
 				store.state.datas.mlevels = new Array<string>();
 				axios({
 					method: "post",
-					url: "/roadType/searchType",
+					url: "/roadType/searchMaintenanceGrade",
 				}).then((response: AxiosResponse) => {
 					if (response.status == 200) {
 						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						response.data.forEach((element: any) => {
-							store.state.datas.mlevels.push(element.name);
+						response.data.data.list.forEach((element: any) => {
+							store.state.datas.mlevels.push(element);
 						});
 					}
 				});
@@ -180,8 +181,13 @@ export default createStore({
 				store.state.data_pagination.current_page = parseInt(para);
 		},
 		get_road_info(store, road_id: string) {
-			if (road_id == store.state.road_info.id) return;
-			else if (road_id == "") {
+			if (road_id == store.state.road_info.id) {
+				console.log("road_id is same");
+				store.state.road_info = JSON.parse(
+					JSON.stringify(store.state.road_info)
+				);
+				return;
+			} else if (road_id == "") {
 				store.state.road_info = new RoadInfo();
 				return;
 			}
@@ -205,6 +211,7 @@ export default createStore({
 					new_road.total_length = road.roadLength;
 					new_road.coordinate = road.roadCoordinate;
 					// BranchRoad
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					road.branchRoads.forEach((element: any) => {
 						const b = new BranchRoadInfo();
 						b.id = element.id;
@@ -223,10 +230,25 @@ export default createStore({
 			});
 		},
 		get_branch_road_info(store, road_id: string) {
+			if (road_id == store.state.branch_road_info.id) {
+				store.state.branch_road_info = JSON.parse(
+					JSON.stringify(store.state.branch_road_info)
+				);
+				return;
+			} else if (road_id == "") {
+				store.state.branch_road_info = new BranchRoadInfo();
+				return;
+			}
+
 			store.state.road_info.branch_road.forEach((element: BranchRoad) => {
 				if (element.id == road_id)
-					store.state.branch_road_info = element;
+					store.state.branch_road_info = JSON.parse(
+						JSON.stringify(element)
+					);
 			});
+		},
+		reload_router(store) {
+			store.state.reload_router++;
 		},
 	},
 	modules: {},

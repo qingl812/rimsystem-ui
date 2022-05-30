@@ -2,13 +2,12 @@
     <!-- 数据信息 -->
     <el-container class="global-layout">
         <el-aside>
-            <SideTreeRoad :road="$store.state.road_info" @update:branch_id="updateBranchId"
-                @update:road_id="updateRoadId"></SideTreeRoad>
+            <SideTreeRoad @updated_node="updated_node"></SideTreeRoad>
         </el-aside>
-        <el-main v-if="branch_id == ''">
+        <el-main v-if="type == 'road'">
             <el-tabs type="card" v-model="selected_tab">
                 <el-tab-pane label="基本信息" name="first">
-                    <RoadInfoEdit :road="$store.state.road_info"></RoadInfoEdit>
+                    <RoadInfoEdit></RoadInfoEdit>
                 </el-tab-pane>
 
                 <el-tab-pane label="图片信息" name="second">
@@ -21,7 +20,7 @@
         <el-main v-else>
             <el-tabs type="card" v-model="selected_tab">
                 <el-tab-pane label="基本信息" name="first">
-                    <BranchInfoEdit :road="$store.state.branch_road_info"></BranchInfoEdit>
+                    <BranchInfoEdit></BranchInfoEdit>
                 </el-tab-pane>
 
                 <el-tab-pane label="图片信息" name="second">
@@ -46,31 +45,16 @@ export default defineComponent({
         BranchInfoEdit
     },
     data() {
-        const road_id = tools.get_router_query("road_id");
-        this.$store.dispatch("get_road_info", road_id);
-        const branch_id = tools.get_router_query("branch_id");
-        this.$store.dispatch("get_branch_road_info", branch_id);
-        const type = tools.get_router_query("type");
-        if (type != "add" && road_id == "") {
-            this.$router.push("/");
-        }
-
         return {
-            branch_id: branch_id,
-            road_id: road_id,
-            add_type: type == "add",
+            type: tools.get_router_query("type"),
             selected_tab: "first",
         };
     },
     methods: {
-        updateBranchId(branch_id: string) {
-            this.branch_id = branch_id;
-            this.$store.dispatch("get_branch_road_info", branch_id);
-        },
-        updateRoadId(road_id: string) {
-            this.road_id = road_id;
-            this.$store.dispatch("get_road_info", road_id);
-        },
+        updated_node() {
+            this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
+            this.type = tools.get_router_query("type");
+        }
     },
 });
 </script>

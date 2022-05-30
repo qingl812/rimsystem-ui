@@ -16,6 +16,7 @@ declare module "@vue/runtime-core" {
 		};
 		road_info: Road;
 		branch_road_info: BranchRoad;
+		reload_router: number;
 	}
 
 	// 为 `this.$store` 提供类型声明

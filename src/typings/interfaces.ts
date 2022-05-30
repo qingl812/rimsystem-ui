@@ -1,7 +1,7 @@
 export interface BranchRoad {
 	name: string;
 	id: string;
-	num: string; // 分段编号?
+	num: string; // 分段编号
 	length: string; // 分段长度
 	begin_location: string; // 起点位置
 	end_location: string; // 终止位置

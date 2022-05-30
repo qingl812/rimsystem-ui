@@ -1,14 +1,14 @@
 <template>
-    <el-form ref="form" :model="new_road" label-width="150px">
-        <el-form-item label="分段名称">
+    <el-form ref="road_form" :model="new_road" label-width="150px" :rules="rules">
+        <el-form-item label="分段名称" prop="name">
             <el-input v-model="new_road.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="分段编号">
+        <el-form-item label="分段编号" prop="num">
             <el-input v-model="new_road.num" disabled></el-input>
         </el-form-item>
 
-        <el-form-item label="分段长度">
+        <el-form-item label="分段长度" prop="length">
             <el-input v-model="new_road.length"></el-input>
         </el-form-item>
 
@@ -63,32 +63,101 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { BranchRoad } from "@/typings/interfaces";
+import { defineComponent, reactive } from "vue";
+import type { FormInstance, FormRules } from 'element-plus'
+import axios, { AxiosResponse } from "axios";
+import tools from "@/typings/Tools";
 
 export default defineComponent({
     name: "BranchInfoEdit",
-    props: {
-        road: {
-            type: Object as () => BranchRoad,
-            required: true
-        }
-    },
-    emits: ["submit"],
     data() {
+        const rules = reactive<FormRules>({
+            name: [
+                { required: true, message: '请输入分段名称' },
+            ],
+            num: [
+                { required: true, message: '请输入分段编号' },
+            ],
+            length: [
+                { required: true, message: '请输入分段长度' },
+            ],
+        })
         return {
-            new_road: JSON.parse(JSON.stringify(this.road)),
+            new_road: reactive(JSON.parse(JSON.stringify(this.$store.state.branch_road_info))),
+            rules: rules,
         }
     },
     beforeCreate() {
+        if (tools.get_router_query("road_id") == "" ||
+            (tools.get_router_query("mode") != "add" && tools.get_router_query("branch_id") == "")) {
+            this.$router.push("/")
+            tools.error("错误的参数")
+        }
+
         this.$store.dispatch("get_datas", "types");
+        this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
     },
-    beforeUpdate() {
-        this.new_road = JSON.parse(JSON.stringify(this.road));
+    watch: {
+        "$store.state.road_info": function () {
+            this.$store.dispatch("get_branch_road_info", tools.get_router_query("branch_id"));
+            this.new_road = reactive(JSON.parse(JSON.stringify(this.$store.state.branch_road_info)));
+        },
     },
     methods: {
-        onSubmit() {
-            this.$emit("submit", this.new_road);
+        async onSubmit() {
+            const road_form = this.$refs.road_form as FormInstance
+            await road_form.validate((valid, fields) => {
+                if (valid) {
+                    if (tools.get_router_query("type") == "add") {
+                        axios({
+                            method: "post",
+                            url: "/",
+                            data: {
+                                roadName: this.new_road.name,
+                                roadNum: this.new_road.num,
+                                roadType: this.new_road.type,
+                                roadMaintenanceGrade: this.new_road.maintenance_level,
+                                roadLength: this.new_road.total_length,
+                                roadSectionNum: this.new_road.segment_number,
+                                roadPavementType: this.new_road.surface_type,
+                                sidewalkBrickType: this.new_road.sidewalk_tile_type,
+                                blindBrickType: this.new_road.blind_road_tile_type,
+                                curbType: this.new_road.curb_type,
+                            }
+                        }).then((response: AxiosResponse) => {
+                            if (response.data.code == 200) {
+                                console.log('submit success!', fields)
+                                console.log(response)
+                            }
+                        });
+                    } else {
+                        axios({
+                            method: "post",
+                            url: "/",
+                            data: {
+                                id: this.new_road.id,
+                                roadName: this.new_road.name,
+                                roadNum: this.new_road.num,
+                                roadType: this.new_road.type,
+                                roadMaintenanceGrade: this.new_road.maintenance_level,
+                                roadLength: this.new_road.total_length,
+                                roadSectionNum: this.new_road.segment_number,
+                                roadPavementType: this.new_road.surface_type,
+                                sidewalkBrickType: this.new_road.sidewalk_tile_type,
+                                blindBrickType: this.new_road.blind_road_tile_type,
+                                curbType: this.new_road.curb_type,
+                            }
+                        }).then((response: AxiosResponse) => {
+                            if (response.data.code == 200) {
+                                console.log('submit success!', fields)
+                                console.log(response)
+                            }
+                        });
+                    }
+                } else {
+                    console.log('error submit!', fields)
+                }
+            })
         }
     }
 });

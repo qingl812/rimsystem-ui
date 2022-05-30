@@ -51,7 +51,7 @@
 					文档管理
 				</el-button>
 				<el-button type="primary"
-					@click="$router.push({ path: 'data-information', query: { road_id: current_road_id } })">
+					@click="$router.push({ path: 'data-information', query: { road_id: current_road_id, type: 'road', mode: 'edit' } })">
 					数据信息
 				</el-button>
 				<el-button type="primary" @click="$router.push('data-deletion')">

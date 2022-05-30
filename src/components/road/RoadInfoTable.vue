@@ -24,18 +24,18 @@
         <template #search>
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="道路名称" v-model="search_name" clearable>
+                    <el-input placeholder="道路名称" v-model="search_name" clearable @input="handleUpdate">
                     </el-input>
                 </el-col>
                 <el-col :span="4">
-                    <el-select v-model="search_type" clearable placeholder="道路类型">
-                        <el-option v-for="item in road_types" :key="item" :label="item" :value="item">
+                    <el-select v-model="search_type" clearable placeholder="道路类型" @change="handleUpdate">
+                        <el-option v-for="item in $store.state.datas.road_type" :key="item" :label="item" :value="item">
                         </el-option>
                     </el-select>
                 </el-col>
                 <el-col :span="4">
-                    <el-select v-model="search_mlevel" clearable placeholder="道路养护等级">
-                        <el-option v-for="item in road_mlevels" :key="item" :label="item" :value="item">
+                    <el-select v-model="search_mlevel" clearable placeholder="道路养护等级" @change="handleUpdate">
+                        <el-option v-for="item in $store.state.datas.mlevels" :key="item" :label="item" :value="item">
                         </el-option>
                     </el-select>
                 </el-col>
@@ -48,9 +48,9 @@
         </template>
 
         <template #button>
-            <el-button type="primary" plain>新增</el-button>
-            <el-button type="primary" plain>查看</el-button>
-            <el-button type="primary" plain>删除</el-button>
+            <el-button type="primary" plain @click="new_road">新增</el-button>
+            <el-button type="primary" plain @click="view_road">查看</el-button>
+            <el-button type="primary" plain @click="remove_road">删除</el-button>
         </template>
     </PublicTable>
 </template>
@@ -59,6 +59,8 @@
 import { defineComponent } from "vue";
 import PublicTable from "@/components/PublicTable.vue";
 import axios, { AxiosResponse } from "axios";
+import tools from "@/typings/Tools";
+import { ElMessageBox, ElMessage } from "element-plus";
 
 interface RoadInfo {
     id: number;
@@ -78,8 +80,6 @@ export default defineComponent({
         this.$store.dispatch("get_datas", "road_type");
         return {
             // search
-            road_types: this.$store.state.datas.road_type,
-            road_mlevels: this.$store.state.datas.mlevels,
             search_name: "",
             search_type: "",
             search_mlevel: "",
@@ -91,6 +91,7 @@ export default defineComponent({
     },
     methods: {
         handleUpdate() {
+            if (this.table_loading) return;
             this.table_loading = true;
             this.table_data = new Array<RoadInfo>();
             axios({
@@ -120,7 +121,57 @@ export default defineComponent({
                 }
                 this.table_loading = false;
             });
-        }
+        },
+        new_road() {
+            this.$router.push({
+                path: "/data-information",
+                query: {
+                    type: "road",
+                    mode: "add",
+                }
+            });
+        },
+        view_road() {
+            if (this.selected_line == "") {
+                tools.error("请选择一条数据");
+                return;
+            }
+            this.$router.push({
+                path: "/data-information",
+                query: {
+                    type: "road",
+                    mode: "edit",
+                    road_id: this.selected_line,
+                }
+            });
+        },
+        remove_road() {
+            if (this.selected_line == "") {
+                tools.error("请选择一条数据");
+                return;
+            }
+            let selected_name = "";
+            this.table_data.forEach((element) => {
+                if (element.id.toString() == this.selected_line) {
+                    selected_name = element.name;
+                }
+            });
+            ElMessageBox.confirm(
+                '是否要删除道路' + selected_name + '？',
+                '警告',
+                {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }
+            )
+                .then(() => {
+                    tools.success("删除成功");
+                })
+                .catch(() => {
+                    tools.error("已取消");
+                })
+        },
     }
 });
 </script>

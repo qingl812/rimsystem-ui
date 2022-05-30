@@ -1,6 +1,5 @@
 import router from "@/router";
 import { ElMessage } from "element-plus";
-import { LocationQuery } from "vue-router";
 import store from "@/store";
 
 export class Tools {
@@ -56,7 +55,6 @@ export class Tools {
 	}
 
 	public logout() {
-		console.log("hello");
 		if (store.state.page_status != "unlogged") {
 			this.success("退出登录");
 			store.commit("set_page_status", "unlogged");

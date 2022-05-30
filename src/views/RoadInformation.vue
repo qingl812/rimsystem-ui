@@ -23,3 +23,10 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style scoped lang="scss">
+.el-main {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+</style>

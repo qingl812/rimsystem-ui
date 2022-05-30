@@ -16,12 +16,18 @@
                             <Folder />
                         </el-icon>
                         <span class="folder">{{ node.label }}</span>
+                        <span class="right">
+                            <slot name="right_parent"></slot>
+                        </span>
                     </template>
                     <template v-else>
                         <el-icon>
                             <Document />
                         </el-icon>
                         <span>{{ node.label }}</span>
+                        <span class="right">
+                            <slot name="right_child"></slot>
+                        </span>
                     </template>
                 </span>
             </template>
@@ -81,5 +87,17 @@ export default defineComponent({
             }
         }
     }
+}
+
+.custom-tree-node {
+    width: 100%;
+
+    .right {
+        float: right;
+    }
+}
+
+* {
+    user-select: none;
 }
 </style>

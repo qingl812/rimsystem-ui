@@ -5,20 +5,9 @@
 	</div>
 
 	<!-- navigate -->
-	<el-menu
-		class="navigate"
-		mode="horizontal"
-		text-color="white"
-		active-text-color="#ffd04b"
-		background-color="#43ace5"
-		:default-active="navigate_active"
-		@select="handleSelect"
-	>
-		<el-menu-item
-			v-for="item in navigate_option"
-			:key="item.url"
-			:index="item.url"
-		>
+	<el-menu class="navigate" mode="horizontal" text-color="white" active-text-color="#ffd04b"
+		background-color="#43ace5" :default-active="navigate_active" @select="handleSelect">
+		<el-menu-item v-for="item in navigate_option" :key="item.url" :index="item.url">
 			{{ item.name }}
 		</el-menu-item>
 	</el-menu>
