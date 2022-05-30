@@ -60,7 +60,7 @@ import { defineComponent } from "vue";
 import PublicTable from "@/components/PublicTable.vue";
 import axios, { AxiosResponse } from "axios";
 import tools from "@/typings/Tools";
-import { ElMessageBox, ElMessage } from "element-plus";
+import { ElMessageBox } from "element-plus";
 
 interface RoadInfo {
     id: number;
