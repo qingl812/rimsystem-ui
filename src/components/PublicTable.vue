@@ -13,7 +13,7 @@
     </el-table>
 
     <el-pagination :page-size="$store.state.data_pagination.page_size" :total="$store.state.data_pagination.total_size"
-        background :current-page="$store.state.data_pagination.current_page" @current-change="$emit('updated')"
+        background v-model:current-page="$store.state.data_pagination.current_page" @current-change="$emit('updated')"
         layout="total, prev, pager, next, jumper" />
 
     <div class="option centered">
@@ -52,6 +52,16 @@ export default defineComponent({
             this.$store.state.data_pagination.page_size = Math.floor(height / 50);
             this.$emit('updated');
         },
+    },
+    watch: {
+        "$store.state.data_pagination.current_page": function () {
+            this.$router.push({
+                query: {
+                    ...this.$route.query,
+                    page: this.$store.state.data_pagination.current_page,
+                }
+            })
+        }
     },
 });
 </script>

@@ -66,7 +66,6 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
-import { Road } from "@/typings/interfaces";
 import type { FormInstance, FormRules } from 'element-plus'
 import axios, { AxiosResponse } from "axios";
 import tools from "@/typings/Tools";
@@ -97,25 +96,24 @@ export default defineComponent({
 		}
 	},
 	beforeCreate() {
-		if (tools.get_router_query("road_id") == "" &&
-			tools.get_router_query("mode") != "add") {
-			this.$router.push("/")
-			tools.error("错误的参数")
-		}
-		this.$store.dispatch("get_datas", "types");
+		this.$store.dispatch("get_datas", "road_type");
 		this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
 	},
 	watch: {
-		"$store.state.road_info": function (road: Road) {
-			this.new_road = reactive(JSON.parse(JSON.stringify(road)));
-		}
+		"$route.query": function () {
+			this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
+			this.new_road = tools.clone(this.$store.state.road_info)
+		},
+		"$store.state.road_info": function () {
+			this.new_road = tools.clone(this.$store.state.road_info)
+		},
 	},
 	methods: {
 		async onSubmit() {
 			const road_form = this.$refs.road_form as FormInstance
-			await road_form.validate((valid, fields) => {
+			await road_form.validate((valid) => {
 				if (valid) {
-					if (tools.get_router_query("type") == "add") {
+					if (tools.get_router_query("mode") == "add") {
 						axios({
 							method: "post",
 							url: "/insertRoad",
@@ -133,11 +131,16 @@ export default defineComponent({
 							}
 						}).then((response: AxiosResponse) => {
 							if (response.data.code == 200) {
-								console.log('submit success!', fields)
-								console.log(response)
+								tools.success("添加成功");
+								this.$router.push("/road-information")
+							} else {
+								tools.success("添加失败");
 							}
+						}).catch((error) => {
+							tools.error("网络错误？");
+							console.log(error);
 						});
-					} else {
+					} else if (tools.get_router_query("mode") == "edit") {
 						axios({
 							method: "post",
 							url: "/updateRoadDetail",
@@ -156,13 +159,19 @@ export default defineComponent({
 							}
 						}).then((response: AxiosResponse) => {
 							if (response.data.code == 200) {
-								console.log('submit success!', fields)
-								console.log(response)
+								tools.success("更新成功");
+								this.$store.dispatch("get_road_info", "");
+								setTimeout(() => {
+									this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
+								}, 10);
+							} else {
+								tools.success("更新成功");
 							}
+						}).catch((error) => {
+							tools.error("网络错误？");
+							console.log(error);
 						});
 					}
-				} else {
-					console.log('error submit!', fields)
 				}
 			})
 		},

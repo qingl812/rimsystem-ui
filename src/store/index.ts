@@ -53,7 +53,7 @@ export default createStore({
 		},
 		road_info: new RoadInfo(),
 		branch_road_info: new BranchRoadInfo(),
-		reload_router: 0, // 刷新路由
+		getting_road_id: "ungetting",
 	},
 	getters: {},
 	mutations: {
@@ -173,6 +173,7 @@ export default createStore({
 			}
 		},
 		get_data_page(store) {
+			console.log("get_data_page");
 			const para = tools.get_router_query("page");
 			store.state.data_pagination.current_page = 1;
 			store.state.data_pagination.total_size = 0;
@@ -182,16 +183,15 @@ export default createStore({
 		},
 		get_road_info(store, road_id: string) {
 			if (road_id == store.state.road_info.id) {
-				console.log("road_id is same");
-				store.state.road_info = JSON.parse(
-					JSON.stringify(store.state.road_info)
-				);
 				return;
 			} else if (road_id == "") {
 				store.state.road_info = new RoadInfo();
 				return;
+			} else if (store.state.getting_road_id == road_id) {
+				return;
 			}
 
+			store.state.getting_road_id = road_id;
 			axios({
 				method: "post",
 				url: "/selectRoadDetail",
@@ -201,15 +201,22 @@ export default createStore({
 			}).then((response: AxiosResponse) => {
 				if (response.data.code == 200) {
 					const road = response.data.data.road;
-					const new_road = new RoadInfo();
-					new_road.id = road.road_id;
-					new_road.name = road.roadName;
-					new_road.type = road.roadType;
-					new_road.num = road.roadNum;
-					new_road.segment_number = road.roadNum;
-					new_road.maintenance_level = road.roadMaintenanceGrade;
-					new_road.total_length = road.roadLength;
-					new_road.coordinate = road.roadCoordinate;
+					const new_road:Road = {
+						id: road.id,
+						name: road.roadName,
+						type: road.roadType,
+						total_length: road.roadLength,
+						num: road.roadNum,
+						unit: road.roadUnit,
+						segment_number: road.roadSectionNum,
+						maintenance_level: road.roadMaintenanceGrade,
+						sidewalk_tile_type: road.sidewalkBrickType,
+						surface_type: road.roadPavementType,
+						blind_road_tile_type: road.blindBrickType,
+						curb_type: road.curbType,
+						coordinate: road.roadCoordinate,
+						branch_road:[],
+					}
 					// BranchRoad
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					road.branchRoads.forEach((element: any) => {
@@ -227,13 +234,11 @@ export default createStore({
 					});
 					store.state.road_info = new_road;
 				}
+				store.state.getting_road_id = "ungetting";
 			});
 		},
 		get_branch_road_info(store, road_id: string) {
 			if (road_id == store.state.branch_road_info.id) {
-				store.state.branch_road_info = JSON.parse(
-					JSON.stringify(store.state.branch_road_info)
-				);
 				return;
 			} else if (road_id == "") {
 				store.state.branch_road_info = new BranchRoadInfo();
@@ -246,9 +251,6 @@ export default createStore({
 						JSON.stringify(element)
 					);
 			});
-		},
-		reload_router(store) {
-			store.state.reload_router++;
 		},
 	},
 	modules: {},

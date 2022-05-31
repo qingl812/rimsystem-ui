@@ -48,7 +48,9 @@
         </template>
 
         <template #button>
-            <el-button type="primary" plain @click="new_road">新增</el-button>
+            <el-button type="primary" plain
+                @click="$router.push({ path: '/data-information', query: { type: 'road', mode: 'add' } })">新增
+            </el-button>
             <el-button type="primary" plain @click="view_road">查看</el-button>
             <el-button type="primary" plain @click="remove_road">删除</el-button>
         </template>
@@ -106,7 +108,6 @@ export default defineComponent({
                 },
             }).then((response: AxiosResponse) => {
                 if (response.status == 200) {
-                    this.$store.state.data_pagination.total_size = response.data.pageCount;
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     response.data.pageData.forEach((element: any) => {
                         this.table_data.push({
@@ -118,17 +119,9 @@ export default defineComponent({
                             unit: element.user.organizationName,
                         });
                     });
+                    this.$store.state.data_pagination.total_size = response.data.totalCount;
                 }
                 this.table_loading = false;
-            });
-        },
-        new_road() {
-            this.$router.push({
-                path: "/data-information",
-                query: {
-                    type: "road",
-                    mode: "add",
-                }
             });
         },
         view_road() {
@@ -166,7 +159,25 @@ export default defineComponent({
                 }
             )
                 .then(() => {
-                    tools.success("删除成功");
+                    console.log(this.selected_line);
+                    axios({
+                        method: "post",
+                        url: "/deleteRoad",
+                        params: {
+                            roadId: this.selected_line,
+                        },
+                    }).then((response: AxiosResponse) => {
+                        if (response.data.code == 200) {
+                            tools.success("删除成功");
+                            this.handleUpdate();
+                        } else {
+                            tools.error("删除失败");
+                            console.log(response);
+                        }
+                    }).catch((error) => {
+                        tools.error("网络错误？");
+                        console.log(error);
+                    });
                 })
                 .catch(() => {
                     tools.error("已取消");

@@ -60,6 +60,11 @@ export class Tools {
 			store.commit("set_page_status", "unlogged");
 		}
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public clone(value: any): any {
+		return JSON.parse(JSON.stringify(value));
+	}
 }
 
 export default Tools.instance;

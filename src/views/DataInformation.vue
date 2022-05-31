@@ -2,7 +2,7 @@
     <!-- 数据信息 -->
     <el-container class="global-layout">
         <el-aside>
-            <SideTreeRoad @updated_node="updated_node"></SideTreeRoad>
+            <SideTreeRoad></SideTreeRoad>
         </el-aside>
         <el-main v-if="type == 'road'">
             <el-tabs type="card" v-model="selected_tab">
@@ -46,15 +46,44 @@ export default defineComponent({
     },
     data() {
         return {
-            type: tools.get_router_query("type"),
+            type: "",
             selected_tab: "first",
         };
     },
+    watch: {
+        "$route.query": function () {
+            this.getMode();
+        },
+    },
+    created() {
+        this.getMode();
+    },
     methods: {
-        updated_node() {
+        getMode() {
+            if (this.$route.path != "/data-information") {
+                return;
+            }
+            let type = tools.get_router_query("type");
+            if (type != "road" && type != "branch") {
+                type = "road";
+            }
+            let mode = tools.get_router_query("mode");
+            if (mode != "add" && mode != "edit") {
+                this.$router.push("/");
+                tools.error("参数错误")
+            }
+            let road_id = tools.get_router_query("road_id");
+            let branch_id = tools.get_router_query("branch_id");
+            if ((mode == "add" && type == "branch" && branch_id == "") ||
+                (mode == "edit" && type == "road" && road_id == "") ||
+                (mode == "edit" && type == "branch" && (road_id == "" || branch_id == ""))
+            ) {
+                this.$router.push("/");
+                tools.error("参数错误")
+            }
+            this.type = type;
             this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
-            this.type = tools.get_router_query("type");
-        }
+        },
     },
 });
 </script>

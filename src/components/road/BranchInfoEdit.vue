@@ -5,7 +5,7 @@
         </el-form-item>
 
         <el-form-item label="分段编号" prop="num">
-            <el-input v-model="new_road.num" disabled></el-input>
+            <el-input v-model="new_road.num"></el-input>
         </el-form-item>
 
         <el-form-item label="分段长度" prop="length">
@@ -88,25 +88,26 @@ export default defineComponent({
         }
     },
     beforeCreate() {
-        if (tools.get_router_query("road_id") == "" ||
-            (tools.get_router_query("mode") != "add" && tools.get_router_query("branch_id") == "")) {
-            this.$router.push("/")
-            tools.error("错误的参数")
-        }
-
-        this.$store.dispatch("get_datas", "types");
+        this.$store.dispatch("get_datas", "road_type");
         this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
+        this.$store.dispatch("get_branch_road_info", tools.get_router_query("branch_id"));
+        this.new_road = tools.clone(this.$store.state.branch_road_info);
     },
     watch: {
+        "$route.query": function () {
+            this.$store.dispatch("get_road_info", tools.get_router_query("road_id"));
+            this.$store.dispatch("get_branch_road_info", tools.get_router_query("branch_id"));
+            this.new_road = tools.clone(this.$store.state.branch_road_info);
+        },
         "$store.state.road_info": function () {
             this.$store.dispatch("get_branch_road_info", tools.get_router_query("branch_id"));
-            this.new_road = reactive(JSON.parse(JSON.stringify(this.$store.state.branch_road_info)));
-        },
+            this.new_road = tools.clone(this.$store.state.branch_road_info);
+        }
     },
     methods: {
         async onSubmit() {
             const road_form = this.$refs.road_form as FormInstance
-            await road_form.validate((valid, fields) => {
+            await road_form.validate((valid) => {
                 if (valid) {
                     if (tools.get_router_query("type") == "add") {
                         axios({
@@ -126,7 +127,6 @@ export default defineComponent({
                             }
                         }).then((response: AxiosResponse) => {
                             if (response.data.code == 200) {
-                                console.log('submit success!', fields)
                                 console.log(response)
                             }
                         });
@@ -149,13 +149,10 @@ export default defineComponent({
                             }
                         }).then((response: AxiosResponse) => {
                             if (response.data.code == 200) {
-                                console.log('submit success!', fields)
                                 console.log(response)
                             }
                         });
                     }
-                } else {
-                    console.log('error submit!', fields)
                 }
             })
         }
