@@ -48,6 +48,20 @@ const routes: Array<RouteRecordRaw> = [
 		},
 	},
 	{
+		path: "/doc-manage",
+		component: () => import("@/views/DocManage.vue"),
+		meta: {
+			title: "文档管理 - 道路信息管理系统",
+		},
+	},
+	{
+		path: "/daily-inspection",
+		component: () => import("@/views/DailyInspection.vue"),
+		meta: {
+			title: "巡查信息 - 道路信息管理系统",
+		},
+	},
+	{
 		path: "/:catchAll(.*)",
 		component: () => import("@/views/app/NotFound.vue"),
 		meta: {

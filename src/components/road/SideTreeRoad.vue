@@ -54,7 +54,6 @@ export default defineComponent({
                     children: [],
                     callback: () => {
                         this.$router.push({
-                            path: "/data-information",
                             query: {
                                 type: "road",
                                 mode: "edit",
@@ -71,7 +70,6 @@ export default defineComponent({
                         label: element.name,
                         callback: (node) => {
                             this.$router.push({
-                                path: "/data-information",
                                 query: {
                                     type: "branch",
                                     mode: "edit",

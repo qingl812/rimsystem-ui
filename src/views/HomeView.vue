@@ -47,17 +47,20 @@
 			<BaiduMap width="100%" :height="current_road_id == '' ? '100%' : 'calc(100% - 32px)'"></BaiduMap>
 
 			<div class="map-status" v-if="current_road_id != ''">
-				<el-button type="primary" @click="$router.push('doc-manage')">
+				<el-button type="primary"
+					@click="$router.push({ path: 'doc-manage', query: { road_id: current_road_id, type: 'all', mode: 'view' } })">
 					文档管理
 				</el-button>
 				<el-button type="primary"
 					@click="$router.push({ path: 'data-information', query: { road_id: current_road_id, type: 'road', mode: 'edit' } })">
 					数据信息
 				</el-button>
-				<el-button type="primary" @click="$router.push('data-deletion')">
+				<el-button type="primary"
+					@click="$router.push({ path: 'data-information', query: { road_id: current_road_id, type: 'road', mode: 'edit' } })">
 					数据删除
 				</el-button>
-				<el-button type="primary" @click="$router.push('daily-inspection')">
+				<el-button type="primary"
+					@click="$router.push({ path: 'daily-inspection', query: { road_id: current_road_id, type: 'road', mode: 'view' } })">
 					日常巡查
 				</el-button>
 			</div>
